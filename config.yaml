@@ -1,0 +1,54 @@
+# Configuration file for Mental Health Predictor
+
+# Data Configuration
+data:
+  raw_data_path: "data/Data.csv"
+  processed_data_path: "data/processed_data.csv"
+  test_size: 0.2
+  random_state: 42
+
+# Model Configuration
+model:
+  model_path: "models/mental_health_model.pkl"
+  scaler_path: "models/scaler.pkl"
+  label_encoder_path: "models/label_encoder.pkl"
+  algorithm: "random_forest"  # Options: random_forest, logistic_regression, xgboost
+  
+# Random Forest Parameters
+random_forest:
+  n_estimators: 100
+  max_depth: 10
+  min_samples_split: 2
+  min_samples_leaf: 1
+  random_state: 42
+
+# Logistic Regression Parameters
+logistic_regression:
+  max_iter: 1000
+  random_state: 42
+
+# XGBoost Parameters
+xgboost:
+  n_estimators: 100
+  max_depth: 6
+  learning_rate: 0.1
+  random_state: 42
+
+# Logging Configuration
+logging:
+  log_dir: "logs"
+  log_file: "logs/training.log"
+  level: "INFO"
+
+# Results Configuration
+results:
+  results_dir: "results"
+  metrics_file: "results/metrics.json"
+  confusion_matrix_file: "results/confusion_matrix.png"
+  feature_importance_file: "results/feature_importance.png"
+
+# Gradio App Configuration
+gradio:
+  server_name: "0.0.0.0"
+  server_port: 7860
+  share: false

@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Health Predictor - AI-Powered Assessment</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #5ee7df 0%, #b490ca 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+        
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.2rem;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background: var(--primary-gradient);
+            color: white;
+            border-radius: 20px 20px 0 0 !important;
+            padding: 20px;
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .form-range {
+            height: 8px;
+        }
+        
+        .range-value {
+            display: inline-block;
+            background: var(--primary-gradient);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .btn-predict {
+            background: var(--secondary-gradient);
+            border: none;
+            padding: 15px 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 50px;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(245, 87, 108, 0.4);
+        }
+        
+        .btn-predict:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(245, 87, 108, 0.6);
+        }
+        
+        .btn-predict:active {
+            transform: translateY(-1px);
+        }
+        
+        .result-card {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .risk-badge {
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: inline-block;
+            margin: 20px 0;
+        }
+        
+        .risk-high {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+        }
+        
+        .risk-moderate {
+            background: linear-gradient(135deg, #ffd93d 0%, #f6c90e 100%);
+            color: #333;
+        }
+        
+        .risk-low {
+            background: linear-gradient(135deg, #51cf66 0%, #37b24d 100%);
+            color: white;
+        }
+        
+        .recommendation-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+        
+        .recommendation-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .info-box {
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            color: #333;
+        }
+        
+        .footer {
+            text-align: center;
+            color: white;
+            padding: 30px;
+            margin-top: 50px;
+        }
+        
+        .confidence-bar {
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            background: var(--success-gradient);
+            transition: width 1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-brain"></i> Mental Health Predictor</h1>
+            <p>AI-Powered Mental Health Assessment Tool</p>
+            {% if not model_loaded %}
+            <div class="alert alert-warning mt-3" role="alert">
+                <i class="fas fa-exclamation-triangle"></i> Running in demo mode. Train the model for accurate predictions.
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Features Section -->
+        <div class="row mb-4">
+            <div class="col-md-3 col-sm-6">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h5>Accurate</h5>
+                    <p>AI-powered predictions</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h5>Private</h5>
+                    <p>Your data stays local</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h5>Fast</h5>
+                    <p>Instant results</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="feature-card">
+                    <div class="feature-icon">💡</div>
+                    <h5>Insightful</h5>
+                    <p>Personalized advice</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Assessment Form -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-clipboard-check"></i> Complete Your Assessment
+            </div>
+            <div class="card-body p-4">
+                <form id="assessmentForm">
+                    <div class="row">
+                        <!-- Personal Information -->
+                        <div class="col-md-6">
+                            <h5 class="mb-3"><i class="fas fa-user"></i> Personal Information</h5>
+                            
+                            <div class="mb-4">
+                                <label class="form-label">Age: <span class="range-value" id="ageValue">25</span></label>
+                                <input type="range" class="form-range" id="age" name="age" min="18" max="80" value="25">
+                            </div>
+                            
+                            <h5 class="mb-3 mt-4"><i class="fas fa-heart-pulse"></i> Mental Health Indicators</h5>
+                            
+                            <div class="mb-4">
+                                <label class="form-label">Stress Level: <span class="range-value" id="stressValue">5</span></label>
+                                <input type="range" class="form-range" id="stress_level" name="stress_level" min="0" max="10" value="5">
+                                <small class="text-muted">0 = No stress, 10 = Extreme stress</small>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label">Anxiety Level: <span class="range-value" id="anxietyValue">5</span></label>
+                                <input type="range" class="form-range" id="anxiety_level" name="anxiety_level" min="0" max="10" value="5">
+                                <small class="text-muted">0 = No anxiety, 10 = Severe anxiety</small>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label">Depression Score: <span class="range-value" id="depressionValue">5</span></label>
+                                <input type="range" class="form-range" id="depression_score" name="depression_score" min="0" max="10" value="5">
+                                <small class="text-muted">0 = None, 10 = Severe</small>
+                            </div>
+                        </div>
+                        
+                        <!-- Lifestyle & History -->
+                        <div class="col-md-6">
+                            <h5 class="mb-3"><i class="fas fa-notes-medical"></i> Medical History</h5>
+                            
+                            <div class="mb-4">
+                                <label class="form-label">Previous Mental Health Issues?</label>
+                                <div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="mental_history" id="historyYes" value="1">
+                                        <label class="form-check-label" for="historyYes">Yes</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="mental_history" id="historyNo" value="0" checked>
+                                        <label class="form-check-label" for="historyNo">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <h5 class="mb-3 mt-4"><i class="fas fa-running"></i> Lifestyle Factors</h5>
+                            
+                            <div class="mb-4">
+                                <label class="form-label">Average Sleep Hours: <span class="range-value" id="sleepValue">7</span></label>
+                                <input type="range" class="form-range" id="sleep_hours" name="sleep_hours" min="0" max="12" step="0.5" value="7">
+                                <small class="text-muted">Hours per night</small>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label">Exercise Frequency</label>
+                                <select class="form-select" id="exercise_frequency" name="exercise_frequency">
+                                    <option value="0">Low (< 1x per week)</option>
+                                    <option value="1" selected>Medium (2-3x per week)</option>
+                                    <option value="2">High (4+ per week)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label">Strong Social Support?</label>
+                                <div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="social_support" id="supportYes" value="1" checked>
+                                        <label class="form-check-label" for="supportYes">Yes</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="social_support" id="supportNo" value="0">
+                                        <label class="form-check-label" for="supportNo">No</label>
+                                    </div>
+                                </div>
+                                <small class="text-muted">Do you have friends/family you can rely on?</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-predict">
+                            <i class="fas fa-brain"></i> Analyze Mental Health
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Loading Spinner -->
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p class="mt-3">Analyzing your data...</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Results Section -->
+        <div class="card result-card" id="resultCard">
+            <div class="card-header">
+                <i class="fas fa-chart-line"></i> Assessment Results
+            </div>
+            <div class="card-body p-4">
+                <div class="text-center">
+                    <div id="riskBadge"></div>
+                    
+                    <h4 class="mt-3">Prediction: <strong id="predictionText"></strong></h4>
+                    
+                    <div class="confidence-bar">
+                        <div class="confidence-fill" id="confidenceBar">0%</div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <h5><i class="fas fa-chart-pie"></i> Probability Distribution</h5>
+                        <canvas id="probabilityChart"></canvas>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h5><i class="fas fa-lightbulb"></i> Personalized Recommendations</h5>
+                        <div id="recommendations"></div>
+                    </div>
+                </div>
+                
+                <div class="info-box mt-4">
+                    <h5><i class="fas fa-info-circle"></i> Important Note</h5>
+                    <p class="mb-0">
+                        This assessment is for educational purposes only and should not replace professional medical advice.
+                        If you're experiencing mental health issues, please consult a licensed mental health professional.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Crisis Resources -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-phone-volume"></i> Crisis Resources
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h6><i class="fas fa-life-ring"></i> National Suicide Prevention Lifeline</h6>
+                        <p><strong>1-800-273-8255</strong></p>
+                        <p>Available 24/7</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h6><i class="fas fa-comment-medical"></i> Crisis Text Line</h6>
+                        <p>Text <strong>HOME</strong> to <strong>741741</strong></p>
+                        <p>Free, 24/7 support</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h6><i class="fas fa-globe"></i> International Resources</h6>
+                        <p><a href="https://www.iasp.info/resources/Crisis_Centres/" target="_blank">Find help worldwide</a></p>
+                        <p>IASP Crisis Centers</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>Made with ❤️ for Mental Health Awareness</p>
+            <p><small>© 2025 Mental Health Predictor | All Rights Reserved</small></p>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Update range slider values
+        document.getElementById('age').addEventListener('input', function(e) {
+            document.getElementById('ageValue').textContent = e.target.value;
+        });
+        
+        document.getElementById('stress_level').addEventListener('input', function(e) {
+            document.getElementById('stressValue').textContent = e.target.value;
+        });
+        
+        document.getElementById('anxiety_level').addEventListener('input', function(e) {
+            document.getElementById('anxietyValue').textContent = e.target.value;
+        });
+        
+        document.getElementById('depression_score').addEventListener('input', function(e) {
+            document.getElementById('depressionValue').textContent = e.target.value;
+        });
+        
+        document.getElementById('sleep_hours').addEventListener('input', function(e) {
+            document.getElementById('sleepValue').textContent = e.target.value;
+        });
+        
+        // Chart instance
+        let probabilityChartInstance = null;
+        
+        // Handle form submission
+        document.getElementById('assessmentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('resultCard').style.display = 'none';
+            
+            // Collect form data
+            const formData = {
+                age: parseInt(document.getElementById('age').value),
+                stress_level: parseInt(document.getElementById('stress_level').value),
+                anxiety_level: parseInt(document.getElementById('anxiety_level').value),
+                depression_score: parseInt(document.getElementById('depression_score').value),
+                mental_history: parseInt(document.querySelector('input[name="mental_history"]:checked').value),
+                sleep_hours: parseFloat(document.getElementById('sleep_hours').value),
+                exercise_frequency: parseInt(document.getElementById('exercise_frequency').value),
+                social_support: parseInt(document.querySelector('input[name="social_support"]:checked').value)
+            };
+            
+            try {
+                // Make API request
+                const response = await fetch('/api/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayResults(result);
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('Error making prediction: ' + error.message);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        });
+        
+        function displayResults(result) {
+            // Show result card
+            document.getElementById('resultCard').style.display = 'block';
+            
+            // Display prediction
+            document.getElementById('predictionText').textContent = result.prediction;
+            
+            // Display risk badge
+            const riskBadge = document.getElementById('riskBadge');
+            const riskInfo = result.risk_level;
+            riskBadge.className = `risk-badge risk-${riskInfo.level}`;
+            riskBadge.innerHTML = `${riskInfo.icon} ${riskInfo.text}`;
+            
+            // Display confidence
+            const confidenceBar = document.getElementById('confidenceBar');
+            const confidencePercent = (result.confidence * 100).toFixed(1);
+            setTimeout(() => {
+                confidenceBar.style.width = confidencePercent + '%';
+                confidenceBar.textContent = confidencePercent + '%';
+            }, 100);
+            
+            // Display probability chart
+            displayProbabilityChart(result.probabilities);
+            
+            // Display recommendations
+            const recommendationsDiv = document.getElementById('recommendations');
+            recommendationsDiv.innerHTML = '';
+            result.recommendations.forEach((rec, index) => {
+                const recDiv = document.createElement('div');
+                recDiv.className = 'recommendation-item';
+                recDiv.innerHTML = `<i class="fas fa-check-circle" style="color: #667eea;"></i> ${rec}`;
+                recommendationsDiv.appendChild(recDiv);
+            });
+            
+            // Scroll to results
+            document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function displayProbabilityChart(probabilities) {
+            const ctx = document.getElementById('probabilityChart').getContext('2d');
+            
+            // Destroy existing chart
+            if (probabilityChartInstance) {
+                probabilityChartInstance.destroy();
+            }
+            
+            const labels = Object.keys(probabilities);
+            const data = Object.values(probabilities).map(v => (v * 100).toFixed(1));
+            
+            probabilityChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            'rgba(81, 207, 102, 0.8)',
+                            'rgba(255, 217, 61, 0.8)',
+                            'rgba(255, 107, 107, 0.8)'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': ' + context.parsed + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
