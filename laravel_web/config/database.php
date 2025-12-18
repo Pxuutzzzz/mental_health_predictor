@@ -8,6 +8,6 @@ return [
     'host' => getenv('DB_HOST') ?: 'localhost',
     'database' => getenv('DB_DATABASE') ?: 'mental_health_db',
     'username' => getenv('DB_USERNAME') ?: 'root',
-    'password' => getenv('DB_PASSWORD') ?: 'root', // Update to match your MySQL password
+    'password' => getenv('DB_PASSWORD') ?: '', // Update to match your MySQL password
     'charset' => 'utf8mb4',
 ];
