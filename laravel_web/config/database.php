@@ -5,9 +5,9 @@
  */
 
 return [
-    'host' => 'localhost',
-    'database' => 'mental_health_db',
-    'username' => 'root',
-    'password' => '', // Default XAMPP MySQL password is empty
+    'host' => getenv('DB_HOST') ?: 'localhost',
+    'database' => getenv('DB_DATABASE') ?: 'mental_health_db',
+    'username' => getenv('DB_USERNAME') ?: 'root',
+    'password' => getenv('DB_PASSWORD') ?: 'root', // Update to match your MySQL password
     'charset' => 'utf8mb4',
 ];

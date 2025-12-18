@@ -8,7 +8,7 @@
 
 ### 2. Buka phpMyAdmin
 - Buka browser: `http://localhost/phpmyadmin`
-- Login (default username: `root`, password: kosong)
+- Login (default username: `root`, password: root)
 
 ### 3. Import Database
 Ada 2 cara:
