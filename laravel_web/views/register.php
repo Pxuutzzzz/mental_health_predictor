@@ -163,6 +163,12 @@
                     <a href="login" class="btn btn-outline-success w-100">
                         <i class="bi bi-box-arrow-in-right"></i> Sign In
                     </a>
+                    
+                    <div class="text-center mt-3">
+                        <a href="home" class="text-white" style="text-decoration: none;">
+                            <i class="bi bi-arrow-left me-1"></i>Kembali ke Beranda
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

@@ -117,6 +117,14 @@ $success = $_GET['success'] ?? '';
                             </div>
                         <?php endif; ?>
                         
+                        <?php if ($error === 'email_failed'): ?>
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                Gagal mengirim email. Silakan hubungi administrator atau coba lagi nanti.
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        <?php endif; ?>
+                        
                         <form method="POST" action="forgot-password-process" id="forgotForm">
                             <div class="mb-4">
                                 <label for="email" class="form-label">

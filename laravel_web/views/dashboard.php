@@ -7,7 +7,7 @@ ob_start();
 
 <!-- Hero Carousel Section -->
 <div class="position-relative mb-4" style="margin-left: -1.5rem; margin-right: -1.5rem; margin-top: -1.5rem; overflow: hidden;">
-    <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="3500" data-bs-pause="false">
+    <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000" data-bs-pause="false">
         <div class="carousel-indicators">
             <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
             <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
@@ -15,51 +15,52 @@ ob_start();
             <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3"></button>
         </div>
         <div class="carousel-inner">
+            <!-- Slide 1 -->
             <div class="carousel-item active">
-                <div style="width: 100%; height: 450px; background: url('assets/images/unnamed.jpg') center center / contain no-repeat;"></div>
-                <div class="position-absolute bottom-0 start-0 end-0 p-4" style="background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);">
-                    <div class="text-white">
-                        <h2 class="fw-bold mb-2">
-                            <span data-lang-id="Selamat datang kembali, <?= $_SESSION['user_name'] ?? 'User' ?>!" 
-                                  data-lang-en="Welcome back, <?= $_SESSION['user_name'] ?? 'User' ?>!">
-                                Selamat datang kembali, <?= $_SESSION['user_name'] ?? 'User' ?>!
-                            </span>
-                        </h2>
-                        <p class="mb-0 fs-5" data-lang-id="Jaga kesehatan mental Anda. Bersama-sama kita dukung kesejahteraan mental." 
-                           data-lang-en="Take care of your mental health. Together we support mental wellness.">
-                            Jaga kesehatan mental Anda. Bersama-sama kita dukung kesejahteraan mental.
-                        </p>
-                    </div>
+                <div style="width: 100%; height: 450px; background: linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7)), url('assets/images/unnamed.jpg') center center / cover no-repeat;"></div>
+                <div class="position-absolute top-50 start-50 translate-middle text-center text-white" style="z-index: 1; width: 90%;">
+                    <h2 class="fw-bold mb-3 display-6" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+                        <span data-lang-id="Selamat datang kembali, <?= $_SESSION['user_name'] ?? 'User' ?>!" 
+                              data-lang-en="Welcome back, <?= $_SESSION['user_name'] ?? 'User' ?>!">
+                            Selamat datang kembali, <?= $_SESSION['user_name'] ?? 'User' ?>!
+                        </span>
+                    </h2>
+                    <p class="mb-0 fs-5" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.3);" 
+                       data-lang-id="Jaga kesehatan mental Anda. Bersama-sama kita dukung kesejahteraan mental." 
+                       data-lang-en="Take care of your mental health. Together we support mental wellness.">
+                        Jaga kesehatan mental Anda. Bersama-sama kita dukung kesejahteraan mental.
+                    </p>
                 </div>
             </div>
+            
+            <!-- Slide 2 -->
             <div class="carousel-item">
-                <div style="width: 100%; height: 450px; background: url('assets/images/unnamed (1).jpg') center center / contain no-repeat;"></div>
-                <div class="position-absolute bottom-0 start-0 end-0 p-4" style="background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);">
-                    <div class="text-white">
-                        <h2 class="fw-bold mb-2">Dukungan Kesehatan Mental</h2>
-                        <p class="mb-0 fs-5">Kami hadir untuk mendukung perjalanan kesehatan mental Anda.</p>
-                    </div>
+                <div style="width: 100%; height: 450px; background: linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7)), url('assets/images/unnamed (1).jpg') center center / cover no-repeat;"></div>
+                <div class="position-absolute top-50 start-50 translate-middle text-center text-white" style="z-index: 1; width: 90%;">
+                    <h2 class="fw-bold mb-3 display-6" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">Dukungan Kesehatan Mental</h2>
+                    <p class="mb-0 fs-5" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">Kami hadir untuk mendukung perjalanan kesehatan mental Anda.</p>
                 </div>
             </div>
+            
+            <!-- Slide 3 -->
             <div class="carousel-item">
-                <div style="width: 100%; height: 450px; background: url('assets/images/unnamed (2).jpg') center center / contain no-repeat;"></div>
-                <div class="position-absolute bottom-0 start-0 end-0 p-4" style="background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);">
-                    <div class="text-white">
-                        <h2 class="fw-bold mb-2">Kesehatan Mental Adalah Prioritas</h2>
-                        <p class="mb-0 fs-5">Mulai perjalanan menuju kesejahteraan mental yang lebih baik.</p>
-                    </div>
+                <div style="width: 100%; height: 450px; background: linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7)), url('assets/images/unnamed (2).jpg') center center / cover no-repeat;"></div>
+                <div class="position-absolute top-50 start-50 translate-middle text-center text-white" style="z-index: 1; width: 90%;">
+                    <h2 class="fw-bold mb-3 display-6" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">Kesehatan Mental Adalah Prioritas</h2>
+                    <p class="mb-0 fs-5" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">Mulai perjalanan menuju kesejahteraan mental yang lebih baik.</p>
                 </div>
             </div>
+            
+            <!-- Slide 4 -->
             <div class="carousel-item">
-                <div style="width: 100%; height: 450px; background: url('assets/images/unnamed (3).jpg') center center / contain no-repeat;"></div>
-                <div class="position-absolute bottom-0 start-0 end-0 p-4" style="background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);">
-                    <div class="text-white">
-                        <h2 class="fw-bold mb-2">Bersama Kita Kuat</h2>
-                        <p class="mb-0 fs-5">Tidak ada yang sendirian dalam perjalanan kesehatan mental.</p>
-                    </div>
+                <div style="width: 100%; height: 450px; background: linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7)), url('assets/images/unnamed (3).jpg') center center / cover no-repeat;"></div>
+                <div class="position-absolute top-50 start-50 translate-middle text-center text-white" style="z-index: 1; width: 90%;">
+                    <h2 class="fw-bold mb-3 display-6" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">Bersama Kita Kuat</h2>
+                    <p class="mb-0 fs-5" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">Tidak ada yang sendirian dalam perjalanan kesehatan mental.</p>
                 </div>
             </div>
         </div>
+        
         <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Previous</span>

@@ -18,7 +18,7 @@
         :root {
             --sidebar-width: 260px;
             --topbar-height: 60px;
-            --primary: #4e73df;
+            --primary: #667eea;
             --success: #1cc88a;
             --info: #36b9cc;
             --warning: #f6c23e;
@@ -41,7 +41,7 @@
         
         /* Navigation Bar */
         .navbar-custom {
-            background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             box-shadow: 0 0.15rem 1.75rem rgba(33, 40, 50, 0.15);
             padding: 0.75rem 0;
         }
@@ -164,7 +164,7 @@
         
         /* Footer */
         .footer {
-            background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+            background: #2c3e50;
             color: white;
             padding: 2rem 0 1rem;
             margin-top: 3rem;
@@ -342,9 +342,45 @@
         }
         
         /* Responsive */
+        @media (max-width: 991px) {
+            .navbar-nav {
+                flex-direction: row !important;
+                flex-wrap: wrap;
+                justify-content: flex-start;
+                align-items: flex-start;
+            }
+            
+            .navbar-nav .nav-item {
+                padding: 0.25rem 0.5rem;
+            }
+            
+            .navbar-nav .nav-link {
+                font-size: 0.85rem;
+                padding: 0.4rem 0.6rem !important;
+                white-space: nowrap;
+            }
+            
+            .navbar-nav .nav-link i {
+                font-size: 0.9rem;
+            }
+            
+            .navbar-collapse {
+                text-align: left;
+            }
+            
+            .dropdown-menu {
+                position: absolute;
+            }
+        }
+        
         @media (max-width: 768px) {
             .main-content {
                 min-height: calc(100vh - 300px);
+            }
+            
+            .navbar-nav .nav-link {
+                font-size: 0.75rem;
+                padding: 0.3rem 0.4rem !important;
             }
         }
     </style>
@@ -363,14 +399,14 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
+                <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link nav-link-custom <?= ($page ?? '') == 'dashboard' ? 'active' : '' ?>" href="dashboard">
                             <i class="bi bi-house-heart me-1"></i> Beranda
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link nav-link-custom <?= ($page ?? '') == 'assessment' ? 'active' : '' ?>" href="index.php">
+                        <a class="nav-link nav-link-custom <?= ($page ?? '') == 'assessment' ? 'active' : '' ?>" href="assessment">
                             <i class="bi bi-clipboard-heart me-1"></i> Cek Kesehatan
                         </a>
                     </li>
@@ -402,6 +438,9 @@
                                 </div>
                             </li>
                             <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="change-password">
+                                <i class="bi bi-key me-2"></i>Ubah Password
+                            </a></li>
                             <li><a class="dropdown-item" href="audit-trail">
                                 <i class="bi bi-clock-history me-2"></i>Riwayat Aktivitas
                             </a></li>

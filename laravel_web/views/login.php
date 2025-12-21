@@ -107,7 +107,14 @@
                 </div>
                 
                 <div class="login-body">
-                    <div id="alertContainer"></div>
+                    <div id="alertContainer">
+                    <?php if (isset($_GET['error']) && $_GET['error'] === 'login_required'): ?>
+                        <div class="alert alert-info alert-dismissible fade show" role="alert">
+                            <i class="bi bi-info-circle me-2"></i>Silakan login untuk mengakses halaman tersebut.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <?php endif; ?>
+                </div>
                     
                     <?php 
                     $success = $_GET['success'] ?? '';
@@ -147,12 +154,6 @@
                             </div>
                         </div>
                         
-                        <div class="d-flex justify-content-end mb-3">
-                            <a href="forgot-password" class="text-primary" style="text-decoration: none; font-size: 0.9rem;">
-                                <i class="bi bi-question-circle me-1"></i>Lupa Password?
-                            </a>
-                        </div>
-                        
                         <button type="submit" class="btn btn-primary w-100 mb-3" id="loginBtn">
                             <i class="bi bi-box-arrow-in-right"></i> Sign In
                         </button>
@@ -165,6 +166,12 @@
                     <a href="register" class="btn btn-outline-primary w-100">
                         <i class="bi bi-person-plus"></i> Create Account
                     </a>
+                    
+                    <div class="text-center mt-3">
+                        <a href="home" class="text-muted" style="text-decoration: none;">
+                            <i class="bi bi-arrow-left me-1"></i>Kembali ke Beranda
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -192,7 +199,7 @@
                 if (result.success) {
                     showAlert('Login successful! Redirecting...', 'success');
                     setTimeout(() => {
-                        window.location.href = 'assessment';
+                        window.location.href = result.redirect || 'dashboard';
                     }, 1000);
                 } else {
                     showAlert(result.error, 'danger');

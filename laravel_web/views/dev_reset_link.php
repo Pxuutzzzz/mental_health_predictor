@@ -2,7 +2,7 @@
 // Development helper - shows reset password link
 // In production, this would be sent via email
 
-session_start();
+// Session already started in index.php, no need to start again
 
 if (!isset($_SESSION['reset_token']) || !isset($_SESSION['reset_email'])) {
     header('Location: login');

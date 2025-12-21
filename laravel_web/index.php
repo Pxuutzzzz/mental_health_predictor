@@ -75,7 +75,11 @@ switch ($path) {
     // Public routes
     case '':
     case 'index.php':
-        header('Location: login');
+        header('Location: home');
+        break;
+    
+    case 'home':
+        require __DIR__ . '/views/home.php';
         break;
     
     case 'login':
@@ -112,45 +116,25 @@ switch ($path) {
         $controller->logout();
         break;
     
-    case 'forgot-password':
+    case 'change-password':
         require __DIR__ . '/app/Controllers/AuthController.php';
         $controller = new Controllers\AuthController();
-        $controller->showForgotPassword();
+        $controller->showChangePassword();
         break;
     
-    case 'forgot-password-process':
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            require __DIR__ . '/app/Controllers/AuthController.php';
-            $controller = new Controllers\AuthController();
-            $controller->forgotPassword();
-            // Redirect to dev helper to show reset link (development mode)
-            header('Location: dev-reset-link');
-            exit;
-        }
-        break;
-    
-    case 'dev-reset-link':
-        // Development helper to show reset link
-        require __DIR__ . '/views/dev_reset_link.php';
-        break;
-    
-    case 'reset-password':
+    case 'change-password-process':
         require __DIR__ . '/app/Controllers/AuthController.php';
         $controller = new Controllers\AuthController();
-        $controller->showResetPassword();
-        break;
-    
-    case 'reset-password-process':
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            require __DIR__ . '/app/Controllers/AuthController.php';
-            $controller = new Controllers\AuthController();
-            $controller->resetPassword();
-        }
+        $controller->changePassword();
         break;
     
     // Protected routes
     case 'assessment':
-        requireAuth();
+        if (!isset($_SESSION['user_id'])) {
+            $_SESSION['redirect_after_login'] = 'assessment';
+            header('Location: login?error=login_required');
+            exit;
+        }
         require __DIR__ . '/views/assessment.php';
         break;
     
@@ -164,11 +148,21 @@ switch ($path) {
         break;
     
     case 'history':
+        if (!isset($_SESSION['user_id'])) {
+            $_SESSION['redirect_after_login'] = 'history';
+            header('Location: login?error=login_required');
+            exit;
+        }
         requireAuth();
         require __DIR__ . '/views/history.php';
         break;
     
     case 'professionals':
+        if (!isset($_SESSION['user_id'])) {
+            $_SESSION['redirect_after_login'] = 'professionals';
+            header('Location: login?error=login_required');
+            exit;
+        }
         requireAuth();
         require __DIR__ . '/views/professionals.php';
         break;
@@ -189,6 +183,11 @@ switch ($path) {
         break;
     
     case 'dashboard':
+        if (!isset($_SESSION['user_id'])) {
+            $_SESSION['redirect_after_login'] = 'dashboard';
+            header('Location: login?error=login_required');
+            exit;
+        }
         requireAuth();
         require __DIR__ . '/views/dashboard.php';
         break;

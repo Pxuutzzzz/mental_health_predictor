@@ -72,7 +72,11 @@ class AuthController
                 // Load user's predictions from database
                 $this->loadUserPredictions($user['id']);
                 
-                echo json_encode(['success' => true]);
+                // Check for redirect after login
+                $redirect = $_SESSION['redirect_after_login'] ?? 'dashboard';
+                unset($_SESSION['redirect_after_login']);
+                
+                echo json_encode(['success' => true, 'redirect' => $redirect]);
             } else {
                 // Log failed login attempt
                 $this->logger->log(
@@ -245,15 +249,11 @@ class AuthController
                 'SUCCESS'
             );
             
-            // In production, send email with reset link
-            // For development, we'll show the link in the response
-            // TODO: Implement email sending
-            
-            // For now, save token to session for demo purposes
+            // Store token in session for development mode
             $_SESSION['reset_token'] = $token;
             $_SESSION['reset_email'] = $email;
             
-            // Don't redirect here, let index.php handle it
+            // Don't redirect here, let index.php handle it (will show dev-reset-link page)
             return;
             
         } catch (\Exception $e) {
@@ -372,6 +372,102 @@ class AuthController
                 'probabilities' => json_decode($assessment['probabilities'], true) ?: [],
                 'recommendations' => json_decode($assessment['recommendations'], true) ?: []
             ];
+        }
+    }
+    
+    public function showChangePassword()
+    {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: login');
+            exit;
+        }
+        require __DIR__ . '/../../views/change_password.php';
+    }
+    
+    public function changePassword()
+    {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: login');
+            exit;
+        }
+        
+        try {
+            $userId = $_SESSION['user_id'];
+            $oldPassword = $_POST['old_password'] ?? '';
+            $newPassword = $_POST['new_password'] ?? '';
+            $confirmPassword = $_POST['confirm_password'] ?? '';
+            
+            // Validation
+            if (empty($oldPassword) || empty($newPassword) || empty($confirmPassword)) {
+                $_SESSION['error'] = 'server_error';
+                header('Location: change-password');
+                exit;
+            }
+            
+            if ($newPassword !== $confirmPassword) {
+                $_SESSION['error'] = 'password_mismatch';
+                header('Location: change-password');
+                exit;
+            }
+            
+            if (strlen($newPassword) < 8) {
+                $_SESSION['error'] = 'password_weak';
+                header('Location: change-password');
+                exit;
+            }
+            
+            if ($oldPassword === $newPassword) {
+                $_SESSION['error'] = 'same_password';
+                header('Location: change-password');
+                exit;
+            }
+            
+            // Get current user password
+            $user = $this->db->fetchOne(
+                "SELECT password FROM users WHERE id = ? LIMIT 1",
+                [$userId]
+            );
+            
+            if (!$user) {
+                $_SESSION['error'] = 'server_error';
+                header('Location: change-password');
+                exit;
+            }
+            
+            // Verify old password
+            if (!password_verify($oldPassword, $user['password'])) {
+                $_SESSION['error'] = 'old_password_wrong';
+                header('Location: change-password');
+                exit;
+            }
+            
+            // Hash new password
+            $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
+            
+            // Update password
+            $this->db->insert(
+                "UPDATE users SET password = ?, updated_at = NOW() WHERE id = ?",
+                [$hashedPassword, $userId]
+            );
+            
+            // Log the change
+            $this->logger->log(
+                \AuditLogger::EVENT_DATA_MODIFICATION,
+                $userId,
+                'Password changed successfully',
+                [],
+                'SUCCESS'
+            );
+            
+            $_SESSION['success'] = 'Password berhasil diubah!';
+            header('Location: change-password');
+            exit;
+            
+        } catch (\Exception $e) {
+            error_log("Change password error: " . $e->getMessage());
+            $_SESSION['error'] = 'server_error';
+            header('Location: change-password');
+            exit;
         }
     }
 }
