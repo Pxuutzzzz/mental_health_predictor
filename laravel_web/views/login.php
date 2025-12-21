@@ -109,6 +109,27 @@
                 <div class="login-body">
                     <div id="alertContainer"></div>
                     
+                    <?php 
+                    $success = $_GET['success'] ?? '';
+                    $error = $_GET['error'] ?? '';
+                    
+                    if ($success === 'password_reset'): 
+                    ?>
+                        <div class="alert alert-success alert-dismissible fade show">
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            Password berhasil direset! Silakan login dengan password baru Anda.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <?php if ($error === 'invalid_or_expired_token'): ?>
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <i class="bi bi-exclamation-circle-fill me-2"></i>
+                            Token reset password tidak valid atau sudah kadaluarsa. Silakan minta link baru.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <?php endif; ?>
+                    
                     <form id="loginForm">
                         <div class="mb-3">
                             <label class="form-label">Email Address</label>
@@ -124,6 +145,12 @@
                                 <span class="input-group-text"><i class="bi bi-lock"></i></span>
                                 <input type="password" class="form-control" name="password" placeholder="Enter your password" required>
                             </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-end mb-3">
+                            <a href="forgot-password" class="text-primary" style="text-decoration: none; font-size: 0.9rem;">
+                                <i class="bi bi-question-circle me-1"></i>Lupa Password?
+                            </a>
                         </div>
                         
                         <button type="submit" class="btn btn-primary w-100 mb-3" id="loginBtn">

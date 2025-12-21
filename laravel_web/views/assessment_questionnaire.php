@@ -323,10 +323,11 @@ ob_start();
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(255,255,255,0.95);
+    background: rgba(255,255,255,0.98);
     z-index: 9999;
     justify-content: center;
     align-items: center;
+    backdrop-filter: blur(5px);
 }
 
 .loading-overlay.show {
@@ -335,21 +336,78 @@ ob_start();
 
 .loading-content {
     text-align: center;
+    max-width: 400px;
 }
 
 .loading-spinner {
-    width: 60px;
-    height: 60px;
-    border: 5px solid #e9ecef;
-    border-top: 5px solid #4e73df;
+    width: 80px;
+    height: 80px;
+    border: 6px solid #e9ecef;
+    border-top: 6px solid #4e73df;
+    border-right: 6px solid #1cc88a;
     border-radius: 50%;
     animation: spin 1s linear infinite;
-    margin: 0 auto 20px;
+    margin: 0 auto 25px;
+}
+
+.loading-progress-bar {
+    width: 100%;
+    height: 6px;
+    background: #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 20px 0;
+}
+
+.loading-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4e73df, #1cc88a);
+    width: 0%;
+    animation: loadProgress 3s ease-in-out forwards;
+}
+
+.loading-steps {
+    text-align: left;
+    margin-top: 20px;
+}
+
+.loading-step {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    font-size: 14px;
+    color: #6c757d;
+    opacity: 0.5;
+    transition: all 0.3s;
+}
+
+.loading-step.active {
+    color: #4e73df;
+    opacity: 1;
+    font-weight: 600;
+}
+
+.loading-step.completed {
+    color: #1cc88a;
+    opacity: 1;
+}
+
+.loading-step i {
+    margin-right: 10px;
+    font-size: 16px;
 }
 
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+@keyframes loadProgress {
+    0% { width: 0%; }
+    25% { width: 30%; }
+    50% { width: 60%; }
+    75% { width: 85%; }
+    100% { width: 100%; }
 }
 
 /* Welcome Card */
@@ -390,8 +448,31 @@ ob_start();
 <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-content">
         <div class="loading-spinner"></div>
-        <h4>Menganalisis Data Anda...</h4>
-        <p class="text-muted">AI sedang memproses jawaban Anda</p>
+        <h4 class="mb-2">🤖 AI Sedang Menganalisis...</h4>
+        <p class="text-muted mb-3">Mohon tunggu sebentar</p>
+        
+        <div class="loading-progress-bar">
+            <div class="loading-progress-fill"></div>
+        </div>
+        
+        <div class="loading-steps">
+            <div class="loading-step" id="step1">
+                <i class="bi bi-circle-fill"></i>
+                <span>Memproses data Anda...</span>
+            </div>
+            <div class="loading-step" id="step2">
+                <i class="bi bi-circle-fill"></i>
+                <span>Menjalankan model AI...</span>
+            </div>
+            <div class="loading-step" id="step3">
+                <i class="bi bi-circle-fill"></i>
+                <span>Menganalisis pola kesehatan mental...</span>
+            </div>
+            <div class="loading-step" id="step4">
+                <i class="bi bi-circle-fill"></i>
+                <span>Menyiapkan rekomendasi...</span>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -697,8 +778,86 @@ ob_start();
                 <button type="button" class="btn btn-secondary btn-wizard" onclick="prevQuestion(7)">
                     <i class="bi bi-arrow-left"></i> Sebelumnya
                 </button>
+                <button type="button" class="btn btn-primary btn-wizard" onclick="showReview()">
+                    <i class="bi bi-eye"></i> Review Jawaban
+                </button>
+            </div>
+        </div>
+
+        <!-- Review Page -->
+        <div class="question-card" data-question="9" id="reviewPage">
+            <div class="question-number">Review & Konfirmasi</div>
+            <h3 class="question-title">Periksa Kembali Jawaban Anda</h3>
+            <p class="question-subtitle">Pastikan semua informasi sudah benar sebelum melanjutkan</p>
+            
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="text-primary mb-3"><i class="bi bi-person-circle"></i> Profil & Riwayat</h6>
+                    <table class="table table-borderless table-sm">
+                        <tr>
+                            <td class="text-muted" style="width: 200px;">Usia</td>
+                            <td class="fw-bold" id="review_age">-</td>
+                            <td class="text-end"><button class="btn btn-sm btn-link" onclick="showQuestion(1)">Edit</button></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Riwayat Mental</td>
+                            <td class="fw-bold" id="review_mental">-</td>
+                            <td class="text-end"><button class="btn btn-sm btn-link" onclick="showQuestion(2)">Edit</button></td>
+                        </tr>
+                    </table>
+
+                    <hr>
+                    <h6 class="text-primary mb-3"><i class="bi bi-heart-pulse"></i> Kondisi Emosional</h6>
+                    <table class="table table-borderless table-sm">
+                        <tr>
+                            <td class="text-muted" style="width: 200px;">Tingkat Stres</td>
+                            <td class="fw-bold" id="review_stress">-</td>
+                            <td class="text-end"><button class="btn btn-sm btn-link" onclick="showQuestion(3)">Edit</button></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Tingkat Kecemasan</td>
+                            <td class="fw-bold" id="review_anxiety">-</td>
+                            <td class="text-end"><button class="btn btn-sm btn-link" onclick="showQuestion(4)">Edit</button></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Tingkat Depresi</td>
+                            <td class="fw-bold" id="review_depression">-</td>
+                            <td class="text-end"><button class="btn btn-sm btn-link" onclick="showQuestion(5)">Edit</button></td>
+                        </tr>
+                    </table>
+
+                    <hr>
+                    <h6 class="text-primary mb-3"><i class="bi bi-activity"></i> Gaya Hidup & Sosial</h6>
+                    <table class="table table-borderless table-sm">
+                        <tr>
+                            <td class="text-muted" style="width: 200px;">Jam Tidur</td>
+                            <td class="fw-bold" id="review_sleep">-</td>
+                            <td class="text-end"><button class="btn btn-sm btn-link" onclick="showQuestion(6)">Edit</button></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Tingkat Olahraga</td>
+                            <td class="fw-bold" id="review_exercise">-</td>
+                            <td class="text-end"><button class="btn btn-sm btn-link" onclick="showQuestion(7)">Edit</button></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Dukungan Sosial</td>
+                            <td class="fw-bold" id="review_social">-</td>
+                            <td class="text-end"><button class="btn btn-sm btn-link" onclick="showQuestion(8)">Edit</button></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="alert alert-info mt-3">
+                <i class="bi bi-info-circle"></i> Setelah Anda submit, AI kami akan menganalisis jawaban Anda dan memberikan hasil dalam beberapa detik.
+            </div>
+            
+            <div class="wizard-navigation">
+                <button type="button" class="btn btn-secondary btn-wizard" onclick="prevQuestion(8)">
+                    <i class="bi bi-arrow-left"></i> Kembali
+                </button>
                 <button type="button" class="btn btn-success btn-wizard" onclick="submitQuestionnaire()">
-                    <i class="bi bi-check-circle"></i> Selesai & Lihat Hasil
+                    <i class="bi bi-check-circle"></i> Submit & Lihat Hasil
                 </button>
             </div>
         </div>
@@ -778,17 +937,49 @@ function updateProgress() {
     const progress = ((currentQuestion - 1) / totalQuestions) * 100;
     document.getElementById('progressFill').style.width = progress + '%';
     
-    // Update wizard steps
+    // Update wizard steps based on question groups
     document.querySelectorAll('.wizard-step').forEach(step => {
         const stepNum = parseInt(step.dataset.step);
         step.classList.remove('active', 'completed');
         
-        if (stepNum < Math.ceil(currentQuestion / 2)) {
+        // Step 1: Q1-2 (Profil)
+        // Step 2: Q3-5 (Emosi)
+        // Step 3: Q6-8 (Gaya Hidup)
+        // Step 4: Q9 (Review/Hasil)
+        
+        if ((stepNum === 1 && currentQuestion > 2) ||
+            (stepNum === 2 && currentQuestion > 5) ||
+            (stepNum === 3 && currentQuestion > 8)) {
             step.classList.add('completed');
-        } else if (stepNum === Math.ceil(currentQuestion / 2)) {
+        } else if ((stepNum === 1 && currentQuestion <= 2) ||
+                   (stepNum === 2 && currentQuestion >= 3 && currentQuestion <= 5) ||
+                   (stepNum === 3 && currentQuestion >= 6 && currentQuestion <= 8) ||
+                   (stepNum === 4 && currentQuestion === 9)) {
             step.classList.add('active');
         }
     });
+}
+
+function showReview() {
+    // Collect all form data
+    const formData = new FormData(document.getElementById('questionnaireForm'));
+    
+    // Update review page
+    document.getElementById('review_age').textContent = formData.get('age') + ' tahun';
+    document.getElementById('review_mental').textContent = formData.get('mental_history') === 'Yes' ? 'Ada riwayat' : 'Tidak ada riwayat';
+    document.getElementById('review_stress').textContent = formData.get('stress') + '/10';
+    document.getElementById('review_anxiety').textContent = formData.get('anxiety') + '/10';
+    document.getElementById('review_depression').textContent = formData.get('depression') + '/10';
+    document.getElementById('review_sleep').textContent = formData.get('sleep') + ' jam/hari';
+    
+    const exercise = formData.get('exercise');
+    const exerciseText = exercise === 'Low' ? 'Rendah' : exercise === 'Moderate' ? 'Sedang' : 'Tinggi';
+    document.getElementById('review_exercise').textContent = exerciseText;
+    
+    document.getElementById('review_social').textContent = formData.get('social_support') === 'Yes' ? 'Ada dukungan' : 'Tidak ada dukungan';
+    
+    // Show review page
+    showQuestion(9);
 }
 
 function showQuestion(questionNum) {
@@ -815,8 +1006,31 @@ function prevQuestion(prevNum) {
 }
 
 function submitQuestionnaire() {
-    // Show loading
-    document.getElementById('loadingOverlay').classList.add('show');
+    // Show loading with animation
+    const overlay = document.getElementById('loadingOverlay');
+    overlay.classList.add('show');
+    
+    // Animate loading steps
+    const steps = ['step1', 'step2', 'step3', 'step4'];
+    steps.forEach((stepId, index) => {
+        setTimeout(() => {
+            document.getElementById(stepId).classList.add('active');
+            
+            // Mark previous as completed
+            if (index > 0) {
+                document.getElementById(steps[index - 1]).classList.remove('active');
+                document.getElementById(steps[index - 1]).classList.add('completed');
+            }
+            
+            // Mark last as completed
+            if (index === steps.length - 1) {
+                setTimeout(() => {
+                    document.getElementById(stepId).classList.remove('active');
+                    document.getElementById(stepId).classList.add('completed');
+                }, 500);
+            }
+        }, index * 700);
+    });
     
     // Collect form data
     const formData = new FormData(document.getElementById('questionnaireForm'));
@@ -843,18 +1057,33 @@ function submitQuestionnaire() {
     })
     .then(response => response.json())
     .then(result => {
-        // Hide loading
-        document.getElementById('loadingOverlay').classList.remove('show');
-        
-        if (result.success) {
-            displayResults(result);
-        } else {
-            alert('Error: ' + result.error);
-        }
+        // Wait for animation to complete
+        setTimeout(() => {
+            overlay.classList.remove('show');
+            
+            // Reset loading steps
+            steps.forEach(stepId => {
+                document.getElementById(stepId).classList.remove('active', 'completed');
+            });
+            
+            if (result.success) {
+                displayResults(result);
+            } else {
+                alert('Error: ' + result.error);
+            }
+        }, 3000); // Wait for animation
     })
     .catch(error => {
-        document.getElementById('loadingOverlay').classList.remove('show');
-        alert('Terjadi kesalahan: ' + error.message);
+        setTimeout(() => {
+            overlay.classList.remove('show');
+            
+            // Reset loading steps
+            steps.forEach(stepId => {
+                document.getElementById(stepId).classList.remove('active', 'completed');
+            });
+            
+            alert('Terjadi kesalahan: ' + error.message);
+        }, 1000);
     });
 }
 

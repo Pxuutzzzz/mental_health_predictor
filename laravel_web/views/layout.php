@@ -5,12 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $title ?? 'Mental Health Predictor' ?></title>
     
+    <!-- Preconnect to CDN for faster loading -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     
     <style>
         :root {
@@ -37,17 +39,11 @@
             overflow-x: hidden;
         }
         
-        /* Sidebar */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: var(--sidebar-width);
-            height: 100vh;
-            background: linear-gradient(180deg, #4e73df 0%, #224abe 100%);
-            padding: 0;
-            z-index: 1000;
+        /* Navigation Bar */
+        .navbar-custom {
+            background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
             box-shadow: 0 0.15rem 1.75rem rgba(33, 40, 50, 0.15);
+            padding: 0.75rem 0;
         }
         
         .sidebar-brand {
@@ -115,8 +111,7 @@
         
         /* Main Content */
         .main-content {
-            margin-left: var(--sidebar-width);
-            min-height: 100vh;
+            min-height: calc(100vh - 200px);
         }
         
         /* Topbar */
@@ -150,6 +145,39 @@
             align-items: center;
             gap: 0.5rem;
             font-size: 0.9rem;
+        }
+        
+        /* Navigation Links */
+        .nav-link-custom {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem !important;
+            transition: all 0.3s;
+        }
+        
+        .nav-link-custom:hover,
+        .nav-link-custom.active {
+            color: white !important;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 0.35rem;
+        }
+        
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+            color: white;
+            padding: 2rem 0 1rem;
+            margin-top: 3rem;
+        }
+        
+        .footer a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer a:hover {
+            color: white;
         }
         
         /* Page Content */
@@ -315,99 +343,152 @@
         
         /* Responsive */
         @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s;
-            }
-            
-            .sidebar.show {
-                transform: translateX(0);
-            }
-            
             .main-content {
-                margin-left: 0;
+                min-height: calc(100vh - 300px);
             }
-            
-            .mobile-menu-btn {
-                display: block !important;
-            }
-        }
-        
-        .mobile-menu-btn {
-            display: none;
         }
     </style>
     
     <?= $extraStyles ?? '' ?>
 </head>
 <body>
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <a href="dashboard" class="sidebar-brand">
-            <i class="bi bi-heart-pulse me-2"></i>
-            <span id="brandName">Cek Kesehatan Mental</span>
-        </a>
-        
-        <div class="sidebar-menu">
-            <div class="sidebar-heading">MENU UTAMA</div>
-            <a href="dashboard" class="menu-item <?= ($page ?? '') == 'dashboard' ? 'active' : '' ?>">
-                <i class="bi bi-house-heart"></i>
-                <span>Beranda</span>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand fw-bold" href="dashboard">
+                <i class="bi bi-heart-pulse me-2"></i>
+                Cek Kesehatan Mental
             </a>
-            <a href="index.php" class="menu-item <?= ($page ?? '') == 'assessment' ? 'active' : '' ?>">
-                <i class="bi bi-clipboard-heart"></i>
-                <span>Cek Kesehatan Mental</span>
-            </a>
-            <a href="history" class="menu-item <?= ($page ?? '') == 'history' ? 'active' : '' ?>">
-                <i class="bi bi-clock-history"></i>
-                <span>Riwayat</span>
-            </a>
-            <a href="professionals" class="menu-item <?= ($page ?? '') == 'professionals' ? 'active' : '' ?>">
-                <i class="bi bi-geo-alt"></i>
-                <span>Cari Psikolog</span>
-            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom <?= ($page ?? '') == 'dashboard' ? 'active' : '' ?>" href="dashboard">
+                            <i class="bi bi-house-heart me-1"></i> Beranda
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom <?= ($page ?? '') == 'assessment' ? 'active' : '' ?>" href="index.php">
+                            <i class="bi bi-clipboard-heart me-1"></i> Cek Kesehatan
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom <?= ($page ?? '') == 'history' ? 'active' : '' ?>" href="history">
+                            <i class="bi bi-clock-history me-1"></i> Riwayat
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom <?= ($page ?? '') == 'professionals' ? 'active' : '' ?>" href="professionals">
+                            <i class="bi bi-geo-alt me-1"></i> Cari Psikolog
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom <?= ($page ?? '') == 'about' ? 'active' : '' ?>" href="about">
+                            <i class="bi bi-info-circle me-1"></i> Tentang Sistem
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle nav-link-custom" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle me-1"></i>
+                            <?= $_SESSION['user_name'] ?? 'User' ?>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <div class="dropdown-header">
+                                    <strong><?= $_SESSION['user_name'] ?? 'User' ?></strong><br>
+                                    <small class="text-muted"><?= $_SESSION['user_email'] ?? '' ?></small>
+                                </div>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="audit-trail">
+                                <i class="bi bi-clock-history me-2"></i>Riwayat Aktivitas
+                            </a></li>
+                            <li><a class="dropdown-item" href="consent">
+                                <i class="bi bi-shield-check me-2"></i>Pengaturan Privasi
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="logout">
+                                <i class="bi bi-box-arrow-right me-2"></i>Keluar
+                            </a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Top Section -->
+    <div class="bg-white py-3 border-bottom">
+        <div class="container-fluid px-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="mb-0 fw-bold text-primary"><?= $pageTitle ?? 'Dashboard' ?></h4>
+                <span class="text-muted small">
+                    <i class="bi bi-calendar3"></i>
+                    <?= date('d M Y') ?>
+                </span>
+            </div>
         </div>
     </div>
     
     <!-- Main Content -->
     <div class="main-content">
-        <!-- Topbar -->
-        <div class="topbar">
-            <button class="btn btn-link mobile-menu-btn" onclick="toggleSidebar()">
-                <i class="bi bi-list fs-4"></i>
-            </button>
-            <div class="topbar-title"><?= $pageTitle ?? 'Dashboard' ?></div>
-            <div class="topbar-actions">
-                <span class="text-muted small me-3">
-                    <i class="bi bi-calendar3"></i>
-                    <?= date('d M Y') ?>
-                </span>
-                <div class="dropdown">
-                    <button class="btn btn-link text-dark dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        <i class="bi bi-person-circle fs-5"></i>
-                        <span class="ms-1"><?= $_SESSION['user_name'] ?? 'User' ?></span>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li>
-                            <div class="dropdown-header">
-                                <strong><?= $_SESSION['user_name'] ?? 'User' ?></strong><br>
-                                <small class="text-muted"><?= $_SESSION['user_email'] ?? '' ?></small>
-                            </div>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="logout">
-                            <i class="bi bi-box-arrow-right me-2"></i>Keluar
-                        </a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Page Content -->
-        <div class="page-content">
+        <div class="container-fluid px-4 py-4">
             <?= $content ?? '' ?>
         </div>
     </div>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container-fluid px-4">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <h5 class="fw-bold mb-3">
+                        <i class="bi bi-heart-pulse me-2"></i>
+                        Mental Health Predictor
+                    </h5>
+                    <p class="small mb-0 text-white-50">
+                        Platform untuk membantu Anda memahami dan menjaga kesehatan mental dengan lebih baik.
+                    </p>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h6 class="fw-bold mb-3">Menu</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="dashboard"><i class="bi bi-chevron-right me-1"></i> Beranda</a></li>
+                        <li class="mb-2"><a href="index.php"><i class="bi bi-chevron-right me-1"></i> Cek Kesehatan Mental</a></li>
+                        <li class="mb-2"><a href="history"><i class="bi bi-chevron-right me-1"></i> Riwayat</a></li>
+                        <li class="mb-2"><a href="professionals"><i class="bi bi-chevron-right me-1"></i> Cari Psikolog</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h6 class="fw-bold mb-3">Kontak</h6>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2">
+                            <i class="bi bi-envelope me-2"></i>
+                            <span class="text-white-50">support@mentalhealth.com</span>
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-telephone me-2"></i>
+                            <span class="text-white-50">119 (Layanan Kesehatan Jiwa)</span>
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-globe me-2"></i>
+                            <a href="https://sejiwa.com" target="_blank">www.sejiwa.com</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-3" style="border-color: rgba(255, 255, 255, 0.2);">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="small mb-0 text-white-50">
+                        &copy; <?= date('Y') ?> Mental Health Predictor. All rights reserved.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
     
     <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay">
@@ -419,14 +500,10 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap JS - Deferred loading -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
     
     <script>
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('show');
-        }
-        
         function showLoading() {
             document.getElementById('loadingOverlay').style.display = 'flex';
         }

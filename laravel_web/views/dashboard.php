@@ -5,6 +5,72 @@ $pageTitle = 'Dashboard';
 ob_start();
 ?>
 
+<!-- Hero Carousel Section -->
+<div class="position-relative mb-4" style="margin-left: -1.5rem; margin-right: -1.5rem; margin-top: -1.5rem; overflow: hidden;">
+    <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="3500" data-bs-pause="false">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div style="width: 100%; height: 450px; background: url('assets/images/unnamed.jpg') center center / contain no-repeat;"></div>
+                <div class="position-absolute bottom-0 start-0 end-0 p-4" style="background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);">
+                    <div class="text-white">
+                        <h2 class="fw-bold mb-2">
+                            <span data-lang-id="Selamat datang kembali, <?= $_SESSION['user_name'] ?? 'User' ?>!" 
+                                  data-lang-en="Welcome back, <?= $_SESSION['user_name'] ?? 'User' ?>!">
+                                Selamat datang kembali, <?= $_SESSION['user_name'] ?? 'User' ?>!
+                            </span>
+                        </h2>
+                        <p class="mb-0 fs-5" data-lang-id="Jaga kesehatan mental Anda. Bersama-sama kita dukung kesejahteraan mental." 
+                           data-lang-en="Take care of your mental health. Together we support mental wellness.">
+                            Jaga kesehatan mental Anda. Bersama-sama kita dukung kesejahteraan mental.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div style="width: 100%; height: 450px; background: url('assets/images/unnamed (1).jpg') center center / contain no-repeat;"></div>
+                <div class="position-absolute bottom-0 start-0 end-0 p-4" style="background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);">
+                    <div class="text-white">
+                        <h2 class="fw-bold mb-2">Dukungan Kesehatan Mental</h2>
+                        <p class="mb-0 fs-5">Kami hadir untuk mendukung perjalanan kesehatan mental Anda.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div style="width: 100%; height: 450px; background: url('assets/images/unnamed (2).jpg') center center / contain no-repeat;"></div>
+                <div class="position-absolute bottom-0 start-0 end-0 p-4" style="background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);">
+                    <div class="text-white">
+                        <h2 class="fw-bold mb-2">Kesehatan Mental Adalah Prioritas</h2>
+                        <p class="mb-0 fs-5">Mulai perjalanan menuju kesejahteraan mental yang lebih baik.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div style="width: 100%; height: 450px; background: url('assets/images/unnamed (3).jpg') center center / contain no-repeat;"></div>
+                <div class="position-absolute bottom-0 start-0 end-0 p-4" style="background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);">
+                    <div class="text-white">
+                        <h2 class="fw-bold mb-2">Bersama Kita Kuat</h2>
+                        <p class="mb-0 fs-5">Tidak ada yang sendirian dalam perjalanan kesehatan mental.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</div>
+
 <!-- Welcome Banner -->
 <div class="row mb-4">
     <div class="col-12">
@@ -14,9 +80,9 @@ ob_start();
                     <div class="col-md-8">
                         <h4 class="mb-2">
                             <i class="bi bi-emoji-smile"></i> 
-                            <span data-lang-id="Selamat datang kembali, <?= $_SESSION['user_name'] ?? 'User' ?>!" 
-                                  data-lang-en="Welcome back, <?= $_SESSION['user_name'] ?? 'User' ?>!">
-                                Selamat datang kembali, <?= $_SESSION['user_name'] ?? 'User' ?>!
+                            <span data-lang-id="Mulai Perjalanan Kesehatan Mental Anda" 
+                                  data-lang-en="Start Your Mental Health Journey">
+                                Mulai Perjalanan Kesehatan Mental Anda
                             </span>
                         </h4>
                         <p class="text-muted mb-0" data-lang-id="Jaga kesehatan mental Anda. Baca artikel-artikel di bawah untuk belajar lebih banyak tentang cara menjaga pikiran dan gaya hidup yang sehat." 

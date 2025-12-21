@@ -2,6 +2,7 @@
 namespace Controllers;
 
 require_once __DIR__ . '/../Database.php';
+require_once __DIR__ . '/../Security/AuditLogger.php';
 
 /**
  * Prediction Controller
@@ -12,10 +13,12 @@ class PredictionController
     private $pythonPath;
     private $scriptPath;
     private $db;
+    private $logger;
     
     public function __construct()
     {
         $this->db = \Database::getInstance();
+        $this->logger = new \AuditLogger($this->db->getConnection());
         // Path to Python executable (using conda environment)
         // Option 1: Use conda run command
         $this->pythonPath = 'C:\Users\putri\anaconda3\Scripts\conda.exe run -p c:\Users\putri\mental_health_predictor\.conda --no-capture-output python';
@@ -102,6 +105,18 @@ class PredictionController
                     json_encode($result['probabilities'] ?? []),
                     json_encode($result['recommendations'] ?? [])
                 ]
+            );
+            
+            // Log the prediction
+            $this->logger->log(
+                \AuditLogger::EVENT_PREDICTION,
+                $_SESSION['user_id'] ?? null,
+                'Mental health prediction performed',
+                [
+                    'prediction' => $result['prediction'] ?? 'Unknown',
+                    'confidence' => $result['confidence'] ?? 0
+                ],
+                'SUCCESS'
             );
             
             // Add to session (for immediate display)

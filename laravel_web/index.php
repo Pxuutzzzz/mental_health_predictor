@@ -4,6 +4,9 @@
  * Simple Laravel-style implementation with Bootstrap UI
  */
 
+// Enable output buffering for better performance
+ob_start();
+
 // Auto-load classes
 spl_autoload_register(function ($class) {
     $file = __DIR__ . '/app/' . str_replace('\\', '/', $class) . '.php';
@@ -12,7 +15,9 @@ spl_autoload_register(function ($class) {
     }
 });
 
-// Start session
+// Start session with optimized settings
+ini_set('session.cookie_httponly', 1);
+ini_set('session.use_strict_mode', 1);
 session_start();
 
 // Set session start time if not exists
@@ -107,6 +112,42 @@ switch ($path) {
         $controller->logout();
         break;
     
+    case 'forgot-password':
+        require __DIR__ . '/app/Controllers/AuthController.php';
+        $controller = new Controllers\AuthController();
+        $controller->showForgotPassword();
+        break;
+    
+    case 'forgot-password-process':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            require __DIR__ . '/app/Controllers/AuthController.php';
+            $controller = new Controllers\AuthController();
+            $controller->forgotPassword();
+            // Redirect to dev helper to show reset link (development mode)
+            header('Location: dev-reset-link');
+            exit;
+        }
+        break;
+    
+    case 'dev-reset-link':
+        // Development helper to show reset link
+        require __DIR__ . '/views/dev_reset_link.php';
+        break;
+    
+    case 'reset-password':
+        require __DIR__ . '/app/Controllers/AuthController.php';
+        $controller = new Controllers\AuthController();
+        $controller->showResetPassword();
+        break;
+    
+    case 'reset-password-process':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            require __DIR__ . '/app/Controllers/AuthController.php';
+            $controller = new Controllers\AuthController();
+            $controller->resetPassword();
+        }
+        break;
+    
     // Protected routes
     case 'assessment':
         requireAuth();
@@ -130,6 +171,21 @@ switch ($path) {
     case 'professionals':
         requireAuth();
         require __DIR__ . '/views/professionals.php';
+        break;
+    
+    case 'about':
+        requireAuth();
+        require __DIR__ . '/views/about.php';
+        break;
+    
+    case 'consent':
+        requireAuth();
+        require __DIR__ . '/views/consent.php';
+        break;
+    
+    case 'audit-trail':
+        requireAuth();
+        require __DIR__ . '/views/audit_trail.php';
         break;
     
     case 'dashboard':
