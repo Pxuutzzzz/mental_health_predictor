@@ -1,7 +1,7 @@
 # Mental Health Predictor - Laravel + Bootstrap Version
 
 ## Overview
-This is a Laravel-style implementation of the Mental Health Predictor using Bootstrap 5 for the frontend UI. It integrates with the existing Python ML model.
+This is a Laravel-style implementation of the Mental Health Predictor using Bootstrap 5 for the frontend UI. It integrates with the existing Python ML model and now supports **hospital integration** for direct referral to partner healthcare facilities.
 
 ## Features
 ✅ Professional Bootstrap 5 UI
@@ -11,6 +11,9 @@ This is a Laravel-style implementation of the Mental Health Predictor using Boot
 ✅ Session-based history tracking
 ✅ Professional gradients and animations
 ✅ Bootstrap Icons integration
+✅ **Hospital Integration** – Direct referrals to partner hospitals/RS
+✅ Encrypted data transmission (HTTPS + Bearer Token)
+✅ Audit logging & compliance (HIPAA/GDPR)
 
 ## File Structure
 ```
@@ -37,18 +40,18 @@ laravel_web/
 **Option A: From laravel_web directory:**
 ```bash
 cd laravel_web
-php -S localhost:8000
+php -S localhost:9000
 ```
 
 **Option B: From project root:**
 ```bash
-php -S localhost:8000 -t laravel_web
+php -S localhost:9000 -t laravel_web
 ```
 
 ### 3. Access the Application
 Open your browser and navigate to:
-- Main Assessment: `http://localhost:8000`
-- History: `http://localhost:8000/history`
+- Main Assessment: `http://localhost:9000`
+- History: `http://localhost:9000/history`
 
 ## How It Works
 
@@ -127,6 +130,7 @@ $this->pythonPath = 'C:\Users\putri\anaconda3\python.exe';
 ✅ **Authentication**: Can add user login easily
 ✅ **Production Ready**: Can deploy to any PHP hosting
 ✅ **SEO Friendly**: Better for search engine optimization
+✅ **Hospital Integration**: Built-in referral system to healthcare partners
 
 ## Future Enhancements
 
@@ -140,6 +144,7 @@ Possible additions:
 - [ ] Export history to CSV
 - [ ] Chart.js visualization
 - [ ] API endpoints for mobile apps
+- [x] **Hospital integration (COMPLETED)** – See [HOSPITAL_INTEGRATION.md](HOSPITAL_INTEGRATION.md)
 
 ## Troubleshooting
 

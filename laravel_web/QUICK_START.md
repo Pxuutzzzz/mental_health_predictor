@@ -9,11 +9,11 @@ cd c:\Users\putri\mental_health_predictor\laravel_web
 
 ### Step 2: Start PHP Server
 ```bash
-php -S localhost:8000
+php -S localhost:9000
 ```
 
 ### Step 3: Open Browser
-Go to: **http://localhost:8000**
+Go to: **http://localhost:9000**
 
 ---
 
@@ -129,7 +129,7 @@ $this->pythonPath = 'YOUR_PYTHON_PATH';
 
 ### Change Port
 ```bash
-php -S localhost:9000  # Use port 9000 instead
+php -S localhost:8001  # Use port 8001 instead
 ```
 
 ### Enable Debug Mode
@@ -177,7 +177,7 @@ Want to enhance? Add:
 → Ensure `session_start()` is called in index.php
 
 **"Port already in use"**
-→ Use different port: `php -S localhost:8001`
+→ Use different port: `php -S localhost:9001`
 
 ---
 
@@ -192,4 +192,4 @@ Issues? Check:
 
 **Ready to use! 🎉**
 
-Open: http://localhost:8000
+Open: http://localhost:9000

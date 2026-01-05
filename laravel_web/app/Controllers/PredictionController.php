@@ -3,6 +3,7 @@ namespace Controllers;
 
 require_once __DIR__ . '/../Database.php';
 require_once __DIR__ . '/../Security/AuditLogger.php';
+require_once __DIR__ . '/../Services/HospitalIntegrationService.php';
 
 /**
  * Prediction Controller
@@ -14,11 +15,13 @@ class PredictionController
     private $scriptPath;
     private $db;
     private $logger;
+    private $hospitalService;
     
     public function __construct()
     {
         $this->db = \Database::getInstance();
         $this->logger = new \AuditLogger($this->db->getConnection());
+        $this->hospitalService = new \HospitalIntegrationService($this->db->getConnection(), $this->logger);
         // Path to Python executable (using conda environment)
         // Option 1: Use conda run command
         $this->pythonPath = 'C:\Users\putri\anaconda3\Scripts\conda.exe run -p c:\Users\putri\mental_health_predictor\.conda --no-capture-output python';
@@ -46,6 +49,27 @@ class PredictionController
             $sleep = floatval($_POST['sleep'] ?? 7);
             $exercise = $_POST['exercise'] ?? 'Medium';
             $social_support = $_POST['social_support'] ?? 'Yes';
+            $share_with_hospital = $this->toBool($_POST['share_with_hospital'] ?? false);
+            $hospital_id = $_POST['hospital_id'] ?? null;
+            $patient_reference = trim($_POST['patient_reference'] ?? '');
+            $hospital_notes = trim($_POST['hospital_notes'] ?? '');
+            
+            // Check if staff mode
+            $isStaffMode = $this->toBool($_POST['staff_mode'] ?? false);
+            $facilityId = $_POST['facility_id'] ?? null;
+            $patientMRN = trim($_POST['patient_mrn'] ?? '');
+            $patientName = trim($_POST['patient_name'] ?? '');
+            $patientGender = $_POST['patient_gender'] ?? null;
+            $visitType = $_POST['visit_type'] ?? 'outpatient';
+            $chiefComplaint = trim($_POST['chief_complaint'] ?? '');
+            $clinicalObservation = trim($_POST['clinical_observation'] ?? '');
+            $followUpPlan = trim($_POST['follow_up_plan'] ?? '');
+            $icdCode = trim($_POST['icd_code'] ?? '');
+            $clinicianName = trim($_POST['clinician_name'] ?? '');
+
+            if ($share_with_hospital && empty($hospital_id) && !$isStaffMode) {
+                throw new \InvalidArgumentException('Silakan pilih rumah sakit tujuan rujukan.');
+            }
             
             // Try to use Python ML model if available
             $result = null;
@@ -85,13 +109,30 @@ class PredictionController
                 $_SESSION['predictions'] = [];
             }
             
-            // Save to database
+            // Save to database (with clinical data if staff mode)
+            $clinicalData = null;
+            if ($isStaffMode) {
+                $clinicalData = json_encode([
+                    'patient_mrn' => $patientMRN,
+                    'patient_name' => $patientName,
+                    'patient_gender' => $patientGender,
+                    'visit_type' => $visitType,
+                    'chief_complaint' => $chiefComplaint,
+                    'clinical_observation' => $clinicalObservation,
+                    'follow_up_plan' => $followUpPlan,
+                    'icd_code' => $icdCode,
+                    'clinician_name' => $clinicianName,
+                    'facility_id' => $facilityId,
+                    'staff_mode' => true
+                ]);
+            }
+            
             $assessmentId = $this->db->insert(
                 "INSERT INTO assessments (user_id, age, stress_level, anxiety_level, depression_level, 
                 mental_history, sleep_hours, exercise_level, social_support, prediction, confidence, 
-                probabilities, recommendations) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                probabilities, recommendations, clinical_data) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 [
-                    $_SESSION['user_id'],
+                    $_SESSION['user_id'] ?? null,
                     $age,
                     $stress,
                     $anxiety,
@@ -103,7 +144,8 @@ class PredictionController
                     $result['prediction'] ?? 'Unknown',
                     $result['confidence'] ?? 0,
                     json_encode($result['probabilities'] ?? []),
-                    json_encode($result['recommendations'] ?? [])
+                    json_encode($result['recommendations'] ?? []),
+                    $clinicalData
                 ]
             );
             
@@ -120,7 +162,7 @@ class PredictionController
             );
             
             // Add to session (for immediate display)
-            $_SESSION['predictions'][] = [
+            $latestPrediction = [
                 'id' => $assessmentId,
                 'timestamp' => date('Y-m-d H:i:s'),
                 'input' => compact('age', 'stress', 'anxiety', 'depression', 'mental_history', 'sleep', 'exercise', 'social_support'),
@@ -129,9 +171,40 @@ class PredictionController
                 'probabilities' => $result['probabilities'] ?? [],
                 'recommendations' => $result['recommendations'] ?? []
             ];
+
+            $_SESSION['predictions'][] = $latestPrediction;
+
+            $hospitalSync = null;
+            // Skip hospital integration if already in staff mode (data already at RS)
+            if ($share_with_hospital && $hospital_id && !$isStaffMode) {
+                $hospitalSync = $this->hospitalService->sendAssessment([
+                    'assessment_id' => $assessmentId,
+                    'user_id' => $_SESSION['user_id'] ?? null,
+                    'hospital_id' => $hospital_id,
+                    'patient_reference' => $patient_reference,
+                    'notes' => $hospital_notes,
+                    'input' => $latestPrediction['input'],
+                    'result' => $result
+                ]);
+            } elseif ($isStaffMode && $facilityId) {
+                // For staff mode, mark as auto-saved to facility
+                $hospitalSync = [
+                    'success' => true,
+                    'status' => 'SAVED_TO_FACILITY',
+                    'message' => 'Data tersimpan langsung di sistem rumah sakit.',
+                    'facility' => ['id' => $facilityId, 'name' => 'Hospital System']
+                ];
+            }
             
             // Return result with success flag and flatten data
-            $response = array_merge(['success' => true], $result);
+            $response = array_merge(['success' => true, 'assessment_id' => $assessmentId], $result);
+            if ($hospitalSync) {
+                $response['hospital_sync'] = $hospitalSync;
+            }
+            if ($isStaffMode) {
+                $response['staff_mode'] = true;
+                $response['patient_mrn'] = $patientMRN;
+            }
             echo json_encode($response);
             
         } catch (\Exception $e) {
@@ -141,6 +214,16 @@ class PredictionController
                 'error' => $e->getMessage()
             ]);
         }
+    }
+
+    private function toBool($value)
+    {
+        if (is_bool($value)) {
+            return $value;
+        }
+
+        $normalized = strtolower(trim((string)$value));
+        return in_array($normalized, ['1', 'true', 'yes', 'on'], true);
     }
     
     private function generatePythonScript($age, $stress, $anxiety, $depression, $mental_history, $sleep, $exercise, $social_support)

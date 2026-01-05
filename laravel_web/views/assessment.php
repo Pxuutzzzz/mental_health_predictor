@@ -2,6 +2,23 @@
 $page = 'assessment';
 $pageTitle = 'Kuesioner Kesehatan Mental';
 
+// Load hospital config safely
+$activeHospitals = [];
+$hospitalConfigFile = dirname(__DIR__) . '/config/hospital.php';
+if (file_exists($hospitalConfigFile)) {
+    try {
+        $hospitalConfig = require $hospitalConfigFile;
+        if (isset($hospitalConfig['facilities']) && is_array($hospitalConfig['facilities'])) {
+            $activeHospitals = array_values(array_filter($hospitalConfig['facilities'], function ($facility) {
+                return isset($facility['active']) && $facility['active'] === true;
+            }));
+        }
+    } catch (Exception $e) {
+        error_log("Hospital config error: " . $e->getMessage());
+        $activeHospitals = [];
+    }
+}
+
 ob_start();
 ?>
 
@@ -384,6 +401,34 @@ ob_start();
     margin: 5px;
     font-size: 14px;
 }
+
+.hospital-integration-card {
+    border: 2px dashed #4e73df;
+    border-radius: 16px;
+    padding: 24px;
+    background: #f6f8ff;
+    margin-top: 20px;
+}
+
+.hospital-fields {
+    margin-top: 20px;
+    display: none;
+    animation: fadeInUp 0.3s ease;
+}
+
+.hospital-fields.show {
+    display: block;
+}
+
+.hospital-facility-info {
+    margin-top: 12px;
+    font-size: 13px;
+    color: #4e73df;
+}
+
+.hospital-status-alert {
+    border-radius: 12px;
+}
 </style>
 
 <!-- Loading Overlay -->
@@ -692,6 +737,49 @@ ob_start();
                     </label>
                 </div>
             </div>
+
+            <?php if (!empty($activeHospitals)): ?>
+            <div class="hospital-integration-card">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+                    <div>
+                        <h5 class="mb-1">Integrasi Rumah Sakit Mitra</h5>
+                        <p class="mb-0 text-muted">Kirim hasil assessment langsung ke RS untuk tindak lanjut klinis.</p>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="shareHospitalToggle" name="share_with_hospital">
+                        <label class="form-check-label" for="shareHospitalToggle">Aktifkan Rujukan</label>
+                    </div>
+                </div>
+
+                <div id="hospitalFields" class="hospital-fields">
+                    <div class="mb-3">
+                        <label for="hospitalSelect" class="form-label">Pilih Rumah Sakit</label>
+                        <select class="form-select" id="hospitalSelect" name="hospital_id">
+                            <option value="">Pilih Rumah Sakit Mitra</option>
+                            <?php foreach ($activeHospitals as $hospital): ?>
+                                <option value="<?= htmlspecialchars($hospital['id']) ?>">
+                                    <?= htmlspecialchars($hospital['name']) ?> (<?= htmlspecialchars($hospital['type'] ?? 'Mitra') ?>)
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <div class="hospital-facility-info" id="hospitalFacilityInfo"></div>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="patientReference" class="form-label">ID Pasien / No. Rekam Medis (opsional)</label>
+                            <input type="text" class="form-control" id="patientReference" name="patient_reference" placeholder="Contoh: MRN-2025-001">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="hospitalNotes" class="form-label">Catatan Klinis Ringkas</label>
+                            <input type="text" class="form-control" id="hospitalNotes" name="hospital_notes" placeholder="Keluhan utama / context singkat">
+                        </div>
+                    </div>
+                    <div class="alert alert-info mt-3 mb-0">
+                        <i class="bi bi-shield-lock me-2"></i> Data yang dikirimkan telah dienkripsi dan hanya berisi parameter assessment.
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
             
             <div class="wizard-navigation">
                 <button type="button" class="btn btn-secondary btn-wizard" onclick="prevQuestion(7)">
@@ -757,6 +845,11 @@ ob_start();
                     <div id="recommendationsContainer"></div>
                 </div>
 
+                <div class="mb-4" id="hospitalStatusBlock" style="display:none;">
+                    <h6 class="mb-3"><i class="bi bi-hospital"></i> Status Integrasi Rumah Sakit</h6>
+                    <div class="alert hospital-status-alert" id="hospitalStatusAlert"></div>
+                </div>
+
                 <div class="text-center">
                     <a href="history" class="btn btn-primary">
                         <i class="bi bi-clock-history"></i> Lihat Riwayat
@@ -773,6 +866,25 @@ ob_start();
 <script>
 let currentQuestion = 1;
 const totalQuestions = 8;
+
+// Safely parse hospital options
+let hospitalOptions = [];
+try {
+    const hospitalData = '<?php echo addslashes(json_encode($activeHospitals)); ?>';
+    if (hospitalData && hospitalData !== '[]' && hospitalData !== '') {
+        hospitalOptions = JSON.parse(hospitalData);
+    }
+} catch (e) {
+    console.error('Failed to parse hospital options:', e);
+    hospitalOptions = [];
+}
+
+const shareHospitalToggle = document.getElementById('shareHospitalToggle');
+const hospitalFields = document.getElementById('hospitalFields');
+const hospitalSelect = document.getElementById('hospitalSelect');
+const hospitalInfo = document.getElementById('hospitalFacilityInfo');
+const hospitalStatusBlock = document.getElementById('hospitalStatusBlock');
+const hospitalStatusAlert = document.getElementById('hospitalStatusAlert');
 
 function updateProgress() {
     const progress = ((currentQuestion - 1) / totalQuestions) * 100;
@@ -832,6 +944,18 @@ function submitQuestionnaire() {
         exercise: formData.get('exercise'),
         social_support: formData.get('social_support')
     };
+
+    const shareWithHospital = shareHospitalToggle ? shareHospitalToggle.checked : false;
+    data.share_with_hospital = shareWithHospital ? 'true' : 'false';
+    if (shareWithHospital) {
+        data.hospital_id = formData.get('hospital_id') || '';
+        data.patient_reference = formData.get('patient_reference') || '';
+        data.hospital_notes = formData.get('hospital_notes') || '';
+    } else {
+        data.hospital_id = '';
+        data.patient_reference = '';
+        data.hospital_notes = '';
+    }
     
     // Send to server
     fetch('predict', {
@@ -942,6 +1066,32 @@ function displayResults(result) {
     } else {
         container.innerHTML = '<p class="text-muted">Tidak ada rekomendasi tersedia.</p>';
     }
+
+    if (result.hospital_sync) {
+        const hs = result.hospital_sync;
+        let alertClass = 'alert-info';
+        let iconClass = 'bi-hourglass-split';
+        if (hs.success) {
+            alertClass = 'alert-success';
+            iconClass = 'bi-check-circle-fill';
+        } else if (hs.status === 'QUEUED') {
+            alertClass = 'alert-warning';
+            iconClass = 'bi-clock-fill';
+        } else if (hs.status === 'FAILED') {
+            alertClass = 'alert-danger';
+            iconClass = 'bi-exclamation-triangle-fill';
+        }
+
+        hospitalStatusAlert.className = 'alert hospital-status-alert ' + alertClass;
+        hospitalStatusAlert.innerHTML = `
+            <div><i class="${iconClass} me-2"></i><strong>${hs.message || 'Pengiriman data ke rumah sakit.'}</strong></div>
+            ${hs.facility ? `<div class="mt-1">Rumah Sakit: ${hs.facility.name}</div>` : ''}
+            ${hs.reference ? `<div class="mt-1 small">Referensi: <code>${hs.reference}</code></div>` : ''}
+        `;
+        hospitalStatusBlock.style.display = 'block';
+    } else {
+        hospitalStatusBlock.style.display = 'none';
+    }
     
     // Hide form, show results
     document.getElementById('questionnaireForm').style.display = 'none';
@@ -975,6 +1125,36 @@ function resetQuestionnaire() {
 
 // Initialize
 updateProgress();
+
+if (shareHospitalToggle) {
+    shareHospitalToggle.addEventListener('change', function () {
+        if (this.checked) {
+            hospitalFields.classList.add('show');
+        } else {
+            hospitalFields.classList.remove('show');
+        }
+    });
+}
+
+if (hospitalSelect && hospitalOptions.length > 0) {
+    hospitalSelect.addEventListener('change', function () {
+        const selectedId = this.value;
+        if (!selectedId || !hospitalInfo) {
+            if (hospitalInfo) hospitalInfo.innerHTML = '';
+            return;
+        }
+
+        const facility = hospitalOptions.find(h => h.id === selectedId);
+        if (facility) {
+            hospitalInfo.innerHTML = `
+                <i class="bi bi-geo-alt-fill me-1"></i> ${facility.location || 'Lokasi tidak diketahui'}<br>
+                <i class="bi bi-telephone-fill me-1"></i> ${facility.contact_phone || '-'}
+            `;
+        } else {
+            hospitalInfo.innerHTML = '';
+        }
+    });
+}
 </script>
 
 <?php

@@ -18,3 +18,10 @@
 [2025-12-21 11:05:53] LOGIN | User: 2 | IP: ::1 | Action: User logged in successfully | Status: SUCCESS | Details: {"email":"putriindah2343@gmail.com"}
 [2025-12-21 11:09:47] LOGOUT | User: 2 | IP: ::1 | Action: User logged out | Status: SUCCESS | Details: []
 [2025-12-21 11:11:35] LOGIN | User: 2 | IP: ::1 | Action: User logged in successfully | Status: SUCCESS | Details: {"email":"putriindah2343@gmail.com"}
+[2026-01-05 07:53:34] LOGOUT | User: 2 | IP: ::1 | Action: User logged out | Status: SUCCESS | Details: []
+[2026-01-05 07:53:59] LOGIN_FAILED | User: Anonymous | IP: ::1 | Action: Failed login attempt | Status: FAILURE | Details: {"email":"putriindah2343@gmail.com","reason":"Invalid credentials"}
+[2026-01-05 07:54:55] LOGIN_FAILED | User: Anonymous | IP: ::1 | Action: Failed login attempt | Status: FAILURE | Details: {"email":"putriindah2343@gmail.com","reason":"Invalid credentials"}
+[2026-01-05 07:55:32] REGISTER | User: 4 | IP: ::1 | Action: New user registered | Status: SUCCESS | Details: {"name":"Inces Puput","email":"putriindahcahyani1419@gmail.com"}
+[2026-01-05 08:39:46] PREDICTION | User: 4 | IP: ::1 | Action: Mental health prediction performed | Status: SUCCESS | Details: {"prediction":"High Risk","confidence":0.82}
+[2026-01-05 08:39:46] HOSPITAL_SYNC | User: 4 | IP: ::1 | Action: Sinkronisasi hasil assessment ke rumah sakit | Status: FAILURE | Details: {"hospital_id":"rs_hermina","hospital_name":"RS Hermina Depok","status":"FAILED"}
+[2026-01-05 10:27:30] PREDICTION | User: 4 | IP: ::1 | Action: Mental health prediction performed | Status: SUCCESS | Details: {"prediction":"Moderate Risk","confidence":0.7999999999999999}

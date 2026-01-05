@@ -324,7 +324,7 @@
             <div class="carousel-inner">
                 <!-- Slide 1 -->
                 <div class="carousel-item active">
-                    <div style="width: 100%; height: 600px; background: linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7)), url('assets/images/unnamed.jpg') center center / cover no-repeat;"></div>
+                    <div style="width: 100%; height: 600px; background: linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7)), url('/assets/images/unnamed.jpg') center center / cover no-repeat;"></div>
                     <div class="carousel-caption">
                         <div class="container hero-content">
                             <div class="row align-items-center">
@@ -346,7 +346,7 @@
                 
                 <!-- Slide 2 -->
                 <div class="carousel-item">
-                    <div style="width: 100%; height: 600px; background: linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7)), url('assets/images/unnamed (1).jpg') center center / cover no-repeat;"></div>
+                    <div style="width: 100%; height: 600px; background: linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7)), url('/assets/images/unnamed (1).jpg') center center / cover no-repeat;"></div>
                     <div class="carousel-caption">
                         <div class="container hero-content">
                             <div class="row align-items-center">
@@ -368,7 +368,7 @@
                 
                 <!-- Slide 3 -->
                 <div class="carousel-item">
-                    <div style="width: 100%; height: 600px; background: linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7)), url('assets/images/unnamed (2).jpg') center center / cover no-repeat;"></div>
+                    <div style="width: 100%; height: 600px; background: linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7)), url('/assets/images/unnamed (2).jpg') center center / cover no-repeat;"></div>
                     <div class="carousel-caption">
                         <div class="container hero-content">
                             <div class="row align-items-center">
@@ -390,7 +390,7 @@
                 
                 <!-- Slide 4 -->
                 <div class="carousel-item">
-                    <div style="width: 100%; height: 600px; background: linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7)), url('assets/images/unnamed (3).jpg') center center / cover no-repeat;"></div>
+                    <div style="width: 100%; height: 600px; background: linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7)), url('/assets/images/unnamed (3).jpg') center center / cover no-repeat;"></div>
                     <div class="carousel-caption">
                         <div class="container hero-content">
                             <div class="row align-items-center">

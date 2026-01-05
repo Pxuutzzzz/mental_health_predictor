@@ -17,7 +17,10 @@ ob_start();
         <div class="carousel-inner">
             <!-- Slide 1 -->
             <div class="carousel-item active">
-                <div style="width: 100%; height: 450px; background: linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7)), url('assets/images/unnamed.jpg') center center / cover no-repeat;"></div>
+                <div style="position: relative; width: 100%; height: 450px; overflow: hidden;">
+                    <img src="assets/images/unnamed.jpg" alt="Mental Health" style="width: 100%; height: 100%; object-fit: cover;">
+                    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7));"></div>
+                </div>
                 <div class="position-absolute top-50 start-50 translate-middle text-center text-white" style="z-index: 1; width: 90%;">
                     <h2 class="fw-bold mb-3 display-6" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
                         <span data-lang-id="Selamat datang kembali, <?= $_SESSION['user_name'] ?? 'User' ?>!" 
@@ -35,7 +38,10 @@ ob_start();
             
             <!-- Slide 2 -->
             <div class="carousel-item">
-                <div style="width: 100%; height: 450px; background: linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7)), url('assets/images/unnamed (1).jpg') center center / cover no-repeat;"></div>
+                <div style="position: relative; width: 100%; height: 450px; overflow: hidden;">
+                    <img src="assets/images/unnamed (1).jpg" alt="Mental Health Support" style="width: 100%; height: 100%; object-fit: cover;">
+                    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7));"></div>
+                </div>
                 <div class="position-absolute top-50 start-50 translate-middle text-center text-white" style="z-index: 1; width: 90%;">
                     <h2 class="fw-bold mb-3 display-6" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">Dukungan Kesehatan Mental</h2>
                     <p class="mb-0 fs-5" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">Kami hadir untuk mendukung perjalanan kesehatan mental Anda.</p>
@@ -44,7 +50,10 @@ ob_start();
             
             <!-- Slide 3 -->
             <div class="carousel-item">
-                <div style="width: 100%; height: 450px; background: linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7)), url('assets/images/unnamed (2).jpg') center center / cover no-repeat;"></div>
+                <div style="position: relative; width: 100%; height: 450px; overflow: hidden;">
+                    <img src="assets/images/unnamed (2).jpg" alt="Mental Health Priority" style="width: 100%; height: 100%; object-fit: cover;">
+                    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7));"></div>
+                </div>
                 <div class="position-absolute top-50 start-50 translate-middle text-center text-white" style="z-index: 1; width: 90%;">
                     <h2 class="fw-bold mb-3 display-6" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">Kesehatan Mental Adalah Prioritas</h2>
                     <p class="mb-0 fs-5" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">Mulai perjalanan menuju kesejahteraan mental yang lebih baik.</p>
@@ -53,7 +62,10 @@ ob_start();
             
             <!-- Slide 4 -->
             <div class="carousel-item">
-                <div style="width: 100%; height: 450px; background: linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7)), url('assets/images/unnamed (3).jpg') center center / cover no-repeat;"></div>
+                <div style="position: relative; width: 100%; height: 450px; overflow: hidden;">
+                    <img src="assets/images/unnamed (3).jpg" alt="Together We Are Strong" style="width: 100%; height: 100%; object-fit: cover;">
+                    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7));"></div>
+                </div>
                 <div class="position-absolute top-50 start-50 translate-middle text-center text-white" style="z-index: 1; width: 90%;">
                     <h2 class="fw-bold mb-3 display-6" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">Bersama Kita Kuat</h2>
                     <p class="mb-0 fs-5" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">Tidak ada yang sendirian dalam perjalanan kesehatan mental.</p>
