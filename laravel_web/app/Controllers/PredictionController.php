@@ -40,15 +40,21 @@ class PredictionController
         header('Content-Type: application/json');
         
         try {
-            // Validate input
+            // Validate input - 13 fields matching the notebook model
             $age = floatval($_POST['age'] ?? 25);
-            $stress = floatval($_POST['stress'] ?? 5);
-            $anxiety = floatval($_POST['anxiety'] ?? 5);
-            $depression = floatval($_POST['depression'] ?? 5);
+            $gender = $_POST['gender'] ?? 'Female';
+            $employment_status = $_POST['employment_status'] ?? 'Employed';
+            $work_environment = $_POST['work_environment'] ?? 'Office';
             $mental_history = $_POST['mental_history'] ?? 'No';
+            $seeks_treatment = $_POST['seeks_treatment'] ?? 'No';
+            $stress = floatval($_POST['stress'] ?? 5);
+            $depression = floatval($_POST['depression'] ?? 15);
+            $anxiety = floatval($_POST['anxiety'] ?? 10);
             $sleep = floatval($_POST['sleep'] ?? 7);
-            $exercise = $_POST['exercise'] ?? 'Medium';
-            $social_support = $_POST['social_support'] ?? 'Yes';
+            $exercise = floatval($_POST['exercise'] ?? 3);
+            $social_support = floatval($_POST['social_support'] ?? 50);
+            $productivity = floatval($_POST['productivity'] ?? 70);
+            
             $share_with_hospital = $this->toBool($_POST['share_with_hospital'] ?? false);
             $hospital_id = $_POST['hospital_id'] ?? null;
             $patient_reference = trim($_POST['patient_reference'] ?? '');
@@ -78,7 +84,7 @@ class PredictionController
             if (file_exists($modelPath)) {
                 // Create Python script to run prediction
                 $pythonScript = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'temp_predict.py';
-                $scriptContent = $this->generatePythonScript($age, $stress, $anxiety, $depression, $mental_history, $sleep, $exercise, $social_support);
+                $scriptContent = $this->generatePythonScript($age, $gender, $employment_status, $work_environment, $mental_history, $seeks_treatment, $stress, $depression, $anxiety, $sleep, $exercise, $social_support, $productivity);
                 file_put_contents($pythonScript, $scriptContent);
                 
                 // Execute Python script
@@ -101,7 +107,7 @@ class PredictionController
             
             // Fallback to mock result if Python fails
             if (!$result) {
-                $result = $this->getMockResult($age, $stress, $anxiety, $depression, $sleep, $exercise, $social_support, $mental_history);
+                $result = $this->getMockResult($age, $gender, $employment_status, $work_environment, $mental_history, $seeks_treatment, $stress, $depression, $anxiety, $sleep, $exercise, $social_support, $productivity);
             }
             
             // Save to session history
@@ -161,11 +167,25 @@ class PredictionController
                 'SUCCESS'
             );
             
-            // Add to session (for immediate display)
+            // Add to session (for immediate display) - include all 13 fields
             $latestPrediction = [
                 'id' => $assessmentId,
                 'timestamp' => date('Y-m-d H:i:s'),
-                'input' => compact('age', 'stress', 'anxiety', 'depression', 'mental_history', 'sleep', 'exercise', 'social_support'),
+                'input' => [
+                    'age' => $age,
+                    'gender' => $gender,
+                    'employment_status' => $employment_status,
+                    'work_environment' => $work_environment,
+                    'mental_history' => $mental_history,
+                    'seeks_treatment' => $seeks_treatment,
+                    'stress' => $stress,
+                    'depression' => $depression,
+                    'anxiety' => $anxiety,
+                    'sleep' => $sleep,
+                    'exercise' => $exercise,
+                    'social_support' => $social_support,
+                    'productivity' => $productivity
+                ],
                 'prediction' => $result['prediction'] ?? 'Unknown',
                 'confidence' => $result['confidence'] ?? 0,
                 'probabilities' => $result['probabilities'] ?? [],
@@ -226,7 +246,7 @@ class PredictionController
         return in_array($normalized, ['1', 'true', 'yes', 'on'], true);
     }
     
-    private function generatePythonScript($age, $stress, $anxiety, $depression, $mental_history, $sleep, $exercise, $social_support)
+    private function generatePythonScript($age, $gender, $employment_status, $work_environment, $mental_history, $seeks_treatment, $stress, $depression, $anxiety, $sleep, $exercise, $social_support, $productivity)
     {
         $modelDir = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'models';
         $modelDir = str_replace('\\', '\\\\', $modelDir);
@@ -237,55 +257,99 @@ import os
 import json
 import joblib
 import numpy as np
+import pandas as pd
 
 try:
-    # Load model
+    # Load model and preprocessors
     model_path = r"{$modelDir}"
-    model = joblib.load(os.path.join(model_path, 'mental_health_model.pkl'))
-    scaler = joblib.load(os.path.join(model_path, 'scaler.pkl'))
-    label_encoder = joblib.load(os.path.join(model_path, 'label_encoder.pkl'))
+    model = joblib.load(os.path.join(model_path, 'random_forest_model.pkl'))
+    label_encoders = joblib.load(os.path.join(model_path, 'label_encoders.pkl'))
+    feature_columns = joblib.load(os.path.join(model_path, 'feature_columns.pkl'))
     
-    # Prepare input
-    mental_history_encoded = 1 if "{$mental_history}" == "Yes" else 0
-    exercise_map = {'Low': 0, 'Medium': 1, 'High': 2}
-    exercise_encoded = exercise_map.get("{$exercise}", 1)
-    social_support_encoded = 1 if "{$social_support}" == "Yes" else 0
+    # Prepare input data
+    data = {
+        'age': {$age},
+        'gender': '{$gender}',
+        'employment_status': '{$employment_status}',
+        'work_environment': '{$work_environment}',
+        'mental_health_history': '{$mental_history}',
+        'seeks_treatment': '{$seeks_treatment}',
+        'stress_level': {$stress},
+        'depression_score': {$depression},
+        'anxiety_score': {$anxiety},
+        'sleep_hours': {$sleep},
+        'physical_activity_days': {$exercise},
+        'social_support_score': {$social_support},
+        'productivity_score': {$productivity}
+    }
     
-    # Create feature array
-    features = np.array([[{$age}, {$stress}, {$anxiety}, {$depression}, mental_history_encoded, {$sleep}, exercise_encoded, social_support_encoded]])
+    # Create DataFrame
+    df = pd.DataFrame([data])
     
-    # Scale features
-    features_scaled = scaler.transform(features)
+    # Encode categorical features
+    for col in ['gender', 'employment_status', 'work_environment', 'mental_health_history', 'seeks_treatment']:
+        if col in label_encoders:
+            df[col] = label_encoders[col].transform(df[col])
+    
+    # Reorder columns to match training
+    df = df[feature_columns]
     
     # Predict
-    prediction = model.predict(features_scaled)[0]
-    probabilities = model.predict_proba(features_scaled)[0]
+    prediction = model.predict(df)[0]
+    probabilities = model.predict_proba(df)[0]
     
-    # Get prediction label
-    prediction_label = label_encoder.inverse_transform([prediction])[0]
+    # Map prediction to risk level
+    risk_levels = ['Low Risk', 'Moderate Risk', 'High Risk']
+    prediction_label = risk_levels[prediction] if prediction < len(risk_levels) else 'Unknown'
     confidence = float(max(probabilities))
     
     # Determine color
-    if 'Low' in prediction_label or 'Rendah' in prediction_label:
+    if prediction == 0:
         color = 'success'
-    elif 'High' in prediction_label or 'Tinggi' in prediction_label:
-        color = 'danger'
-    else:
+    elif prediction == 1:
         color = 'warning'
+    else:
+        color = 'danger'
     
     # Create result
     result = {
         'prediction': prediction_label,
         'confidence': confidence,
         'risk_score': float(probabilities[prediction]),
-        'color': color,
         'probabilities': {
-            label_encoder.inverse_transform([i])[0]: float(prob) 
-            for i, prob in enumerate(probabilities)
-        }
+            'Low Risk': float(probabilities[0]) if len(probabilities) > 0 else 0.0,
+            'Moderate Risk': float(probabilities[1]) if len(probabilities) > 1 else 0.0,
+            'High Risk': float(probabilities[2]) if len(probabilities) > 2 else 0.0
+        },
+        'color': color,
+        'recommendations': []
     }
     
+    # Add recommendations based on risk level
+    if prediction == 2:  # High Risk
+        result['recommendations'] = [
+            'Sangat disarankan untuk segera konsultasi dengan profesional kesehatan mental',
+            'Hubungi keluarga atau teman dekat untuk mendapatkan dukungan',
+            'Prioritaskan tidur yang cukup dan pola makan sehat',
+            'Hindari alkohol dan zat adiktif'
+        ]
+    elif prediction == 1:  # Moderate Risk
+        result['recommendations'] = [
+            'Pertimbangkan untuk konseling atau terapi',
+            'Jaga pola tidur dan aktivitas fisik secara teratur',
+            'Praktikkan teknik relaksasi seperti meditasi',
+            'Tetap terhubung dengan orang-orang terdekat'
+        ]
+    else:  # Low Risk
+        result['recommendations'] = [
+            'Lanjutkan kebiasaan hidup sehat Anda',
+            'Tetap aktif secara fisik dan sosial',
+            'Jaga pola tidur dan pola makan',
+            'Lakukan pemeriksaan rutin untuk monitor kesehatan mental'
+        ]
+    
     print(json.dumps(result))
+    sys.exit(0)
     
 except Exception as e:
     print(json.dumps({'error': str(e)}), file=sys.stderr)
@@ -293,18 +357,20 @@ except Exception as e:
 PYTHON;
     }
 
-    private function getMockResult($age, $stress, $anxiety, $depression, $sleep, $exercise, $social_support, $mental_history)
+    private function getMockResult($age, $gender, $employment_status, $work_environment, $mental_history, $seeks_treatment, $stress, $depression, $anxiety, $sleep, $exercise, $social_support, $productivity)
     {
-        // Calculate risk score based on multiple factors
-        $mental_score = ($stress + $anxiety + $depression) / 30;
+        // Simple risk calculation based on multiple factors
+        $mental_score = ($stress + $depression + $anxiety) / 50.0; // Normalized to 0-1
         
         // Adjust for other factors
         $sleep_penalty = ($sleep < 6 || $sleep > 9) ? 0.1 : 0;
-        $exercise_bonus = ($exercise == 'High') ? -0.1 : (($exercise == 'Low') ? 0.1 : 0);
-        $support_bonus = ($social_support == 'Yes') ? -0.05 : 0.1;
+        $exercise_bonus = ($exercise >= 4) ? -0.1 : (($exercise < 2) ? 0.1 : 0);
+        $support_bonus = ($social_support >= 60) ? -0.05 : (($social_support < 30) ? 0.1 : 0);
         $history_penalty = ($mental_history == 'Yes') ? 0.15 : 0;
+        $treatment_bonus = ($seeks_treatment == 'Yes') ? -0.05 : 0;
+        $productivity_bonus = ($productivity >= 70) ? -0.05 : (($productivity < 40) ? 0.1 : 0);
         
-        $risk_score = $mental_score + $sleep_penalty + $exercise_bonus + $support_bonus + $history_penalty;
+        $risk_score = $mental_score + $sleep_penalty + $exercise_bonus + $support_bonus + $history_penalty + $treatment_bonus + $productivity_bonus;
         $risk_score = max(0, min(1, $risk_score)); // Clamp between 0 and 1
         
         if ($risk_score < 0.35) {

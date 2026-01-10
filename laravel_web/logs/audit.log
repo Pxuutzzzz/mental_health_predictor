@@ -25,3 +25,23 @@
 [2026-01-05 08:39:46] PREDICTION | User: 4 | IP: ::1 | Action: Mental health prediction performed | Status: SUCCESS | Details: {"prediction":"High Risk","confidence":0.82}
 [2026-01-05 08:39:46] HOSPITAL_SYNC | User: 4 | IP: ::1 | Action: Sinkronisasi hasil assessment ke rumah sakit | Status: FAILURE | Details: {"hospital_id":"rs_hermina","hospital_name":"RS Hermina Depok","status":"FAILED"}
 [2026-01-05 10:27:30] PREDICTION | User: 4 | IP: ::1 | Action: Mental health prediction performed | Status: SUCCESS | Details: {"prediction":"Moderate Risk","confidence":0.7999999999999999}
+[2026-01-10 13:53:39] REGISTER | User: 5 | IP: ::1 | Action: New user registered | Status: SUCCESS | Details: {"name":"Putri Indah Cahyani","email":"mahasiswa@unisayogya.ac.id"}
+[2026-01-10 13:55:00] PREDICTION | User: 5 | IP: ::1 | Action: Mental health prediction performed | Status: SUCCESS | Details: {"prediction":"Moderate Risk","confidence":0.74}
+[2026-01-10 13:59:11] LOGOUT | User: 5 | IP: ::1 | Action: User logged out | Status: SUCCESS | Details: []
+[2026-01-10 13:59:28] LOGIN_FAILED | User: Anonymous | IP: ::1 | Action: Failed login attempt | Status: FAILURE | Details: {"email":"admin@unisayogya.ac.id","reason":"Invalid credentials"}
+[2026-01-10 13:59:35] LOGIN_FAILED | User: Anonymous | IP: ::1 | Action: Failed login attempt | Status: FAILURE | Details: {"email":"Admin@unisayogya.ac.id","reason":"Invalid credentials"}
+[2026-01-10 13:59:37] LOGIN_FAILED | User: Anonymous | IP: ::1 | Action: Failed login attempt | Status: FAILURE | Details: {"email":"Admin@unisayogya.ac.id","reason":"Invalid credentials"}
+[2026-01-10 13:59:38] LOGIN_FAILED | User: Anonymous | IP: ::1 | Action: Failed login attempt | Status: FAILURE | Details: {"email":"Admin@unisayogya.ac.id","reason":"Invalid credentials"}
+[2026-01-10 13:59:43] LOGIN_FAILED | User: Anonymous | IP: ::1 | Action: Failed login attempt | Status: FAILURE | Details: {"email":"Admin@unisayogya.ac.id","reason":"Invalid credentials"}
+[2026-01-10 13:59:54] LOGIN_FAILED | User: Anonymous | IP: ::1 | Action: Failed login attempt | Status: FAILURE | Details: {"email":"Admin@unisayogya.ac.id","reason":"Invalid credentials"}
+[2026-01-10 14:00:02] LOGIN_FAILED | User: Anonymous | IP: ::1 | Action: Failed login attempt | Status: FAILURE | Details: {"email":"Admin@unisayogya.ac.id","reason":"Invalid credentials"}
+[2026-01-10 14:00:11] LOGIN | User: 5 | IP: ::1 | Action: User logged in successfully | Status: SUCCESS | Details: {"email":"mahasiswa@unisayogya.ac.id"}
+[2026-01-10 14:01:29] PREDICTION | User: 5 | IP: ::1 | Action: Mental health prediction performed | Status: SUCCESS | Details: {"prediction":"Moderate Risk","confidence":0.75}
+[2026-01-10 14:09:29] PREDICTION | User: 5 | IP: ::1 | Action: Mental health prediction performed | Status: SUCCESS | Details: {"prediction":"Moderate Risk","confidence":0.76}
+[2026-01-10 14:12:42] PREDICTION | User: 5 | IP: ::1 | Action: Mental health prediction performed | Status: SUCCESS | Details: {"prediction":"Low Risk","confidence":0.8200000000000001}
+[2026-01-10 14:18:21] PREDICTION | User: 5 | IP: ::1 | Action: Mental health prediction performed | Status: SUCCESS | Details: {"prediction":"Low Risk","confidence":0.88}
+[2026-01-10 14:23:07] PREDICTION | User: 5 | IP: ::1 | Action: Mental health prediction performed | Status: SUCCESS | Details: {"prediction":"Low Risk","confidence":0.81}
+[2026-01-10 14:40:53] LOGOUT | User: 5 | IP: ::1 | Action: User logged out | Status: SUCCESS | Details: []
+[2026-01-10 15:05:34] LOGIN | User: 3 | IP: ::1 | Action: User logged in via Google | Status: SUCCESS | Details: {"email":"2211501021@student.unisayogya.ac.id"}
+[2026-01-10 15:06:26] LOGIN | User: 2 | IP: ::1 | Action: User logged in via Google | Status: SUCCESS | Details: {"email":"putriindah2343@gmail.com"}
+[2026-01-10 15:16:25] PREDICTION | User: 3 | IP: ::1 | Action: Mental health prediction performed | Status: SUCCESS | Details: {"prediction":"Low Risk","confidence":0.81}

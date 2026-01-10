@@ -420,26 +420,36 @@
                             <i class="bi bi-geo-alt me-1"></i> Cari Psikolog
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link nav-link-custom <?= ($page ?? '') == 'about' ? 'active' : '' ?>" href="about">
-                            <i class="bi bi-info-circle me-1"></i> Tentang Sistem
-                        </a>
-                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle nav-link-custom" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-person-circle me-1"></i>
+                            <?php if (isset($_SESSION['google_picture'])): ?>
+                                <img src="<?= htmlspecialchars($_SESSION['google_picture']) ?>" 
+                                     alt="Profile" 
+                                     class="rounded-circle me-1"
+                                     style="width: 28px; height: 28px; object-fit: cover;">
+                            <?php else: ?>
+                                <i class="bi bi-person-circle me-1"></i>
+                            <?php endif; ?>
                             <?= $_SESSION['user_name'] ?? 'User' ?>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li>
-                                <div class="dropdown-header">
+                                <div class="dropdown-header text-center">
+                                    <?php if (isset($_SESSION['google_picture'])): ?>
+                                        <img src="<?= htmlspecialchars($_SESSION['google_picture']) ?>" 
+                                             alt="Profile" 
+                                             class="rounded-circle mb-2"
+                                             style="width: 60px; height: 60px; object-fit: cover;">
+                                        <br>
+                                    <?php endif; ?>
                                     <strong><?= $_SESSION['user_name'] ?? 'User' ?></strong><br>
                                     <small class="text-muted"><?= $_SESSION['user_email'] ?? '' ?></small>
                                 </div>
                             </li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="change-password">
+                            <!-- <li><a class="dropdown-item" href="change-password">
                                 <i class="bi bi-key me-2"></i>Ubah Password
+                            </a></li> -->
                             </a></li>
                             <li><a class="dropdown-item" href="audit-trail">
                                 <i class="bi bi-clock-history me-2"></i>Riwayat Aktivitas

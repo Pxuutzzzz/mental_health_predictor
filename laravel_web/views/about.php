@@ -128,7 +128,7 @@ ob_start();
         </div>
         <div class="col-md-3">
             <div class="metric-card" style="background: linear-gradient(135deg, #f6c23e 0%, #dda20a 100%);">
-                <div class="metric-number">8</div>
+                <div class="metric-number">13</div>
                 <div class="metric-label">Parameter Input</div>
             </div>
         </div>
@@ -187,7 +187,7 @@ ob_start();
                     <div class="col-md-6">
                         <div class="feature-item">
                             <strong>1. Input Processing</strong>
-                            <p class="mb-0 small mt-2">8 parameter (usia, stres, anxiety, depresi, riwayat mental, tidur, olahraga, dukungan sosial) dinormalisasi dan diproses</p>
+                            <p class="mb-0 small mt-2">13 parameter (demografi, riwayat kesehatan mental, skor emosi/mental, gaya hidup, produktivitas) diproses menggunakan label encoding dan feature scaling</p>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -234,7 +234,7 @@ ob_start();
                     </tr>
                     <tr>
                         <td class="fw-bold">Features</td>
-                        <td>8 parameters</td>
+                        <td>13 parameters</td>
                     </tr>
                 </table>
 
@@ -283,87 +283,109 @@ ob_start();
         <div class="col-12">
             <div class="info-card">
                 <h5><i class="bi bi-bar-chart"></i> Feature Importance Analysis</h5>
-                <p>Berdasarkan analisis Random Forest, berikut adalah tingkat pengaruh setiap parameter terhadap prediksi:</p>
+                <p>Berdasarkan analisis Random Forest dengan 13 parameter input, berikut adalah tingkat pengaruh setiap parameter terhadap prediksi kesehatan mental:</p>
                 
                 <div class="row mt-3">
                     <div class="col-md-6">
-                        <h6>Top 4 Most Important Features</h6>
+                        <h6>Parameter Mental & Emosional (Paling Berpengaruh)</h6>
                         <div class="mb-3">
                             <div class="d-flex justify-content-between mb-1">
-                                <span>1. Depression Level</span>
-                                <span class="fw-bold">28.5%</span>
+                                <span>1. Depression Score (PHQ-9)</span>
+                                <span class="fw-bold">22.5%</span>
                             </div>
                             <div class="progress" style="height: 10px;">
-                                <div class="progress-bar bg-danger" style="width: 28.5%"></div>
+                                <div class="progress-bar bg-danger" style="width: 22.5%"></div>
                             </div>
                         </div>
                         <div class="mb-3">
                             <div class="d-flex justify-content-between mb-1">
-                                <span>2. Anxiety Level</span>
-                                <span class="fw-bold">24.2%</span>
+                                <span>2. Anxiety Score (GAD-7)</span>
+                                <span class="fw-bold">19.8%</span>
                             </div>
                             <div class="progress" style="height: 10px;">
-                                <div class="progress-bar bg-warning" style="width: 24.2%"></div>
+                                <div class="progress-bar bg-warning" style="width: 19.8%"></div>
                             </div>
                         </div>
                         <div class="mb-3">
                             <div class="d-flex justify-content-between mb-1">
                                 <span>3. Stress Level</span>
-                                <span class="fw-bold">19.8%</span>
+                                <span class="fw-bold">16.2%</span>
                             </div>
                             <div class="progress" style="height: 10px;">
-                                <div class="progress-bar bg-info" style="width: 19.8%"></div>
+                                <div class="progress-bar bg-info" style="width: 16.2%"></div>
                             </div>
                         </div>
                         <div class="mb-3">
                             <div class="d-flex justify-content-between mb-1">
-                                <span>4. Mental History</span>
-                                <span class="fw-bold">12.3%</span>
+                                <span>4. Mental Health History</span>
+                                <span class="fw-bold">11.5%</span>
                             </div>
                             <div class="progress" style="height: 10px;">
-                                <div class="progress-bar bg-primary" style="width: 12.3%"></div>
+                                <div class="progress-bar bg-primary" style="width: 11.5%"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>5. Seeks Treatment</span>
+                                <span class="fw-bold">8.3%</span>
+                            </div>
+                            <div class="progress" style="height: 10px;">
+                                <div class="progress-bar bg-secondary" style="width: 8.3%"></div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <h6>Other Features</h6>
+                        <h6>Parameter Gaya Hidup & Demografi</h6>
                         <div class="mb-3">
                             <div class="d-flex justify-content-between mb-1">
-                                <span>5. Sleep Hours</span>
-                                <span class="fw-bold">7.1%</span>
+                                <span>6. Productivity Score</span>
+                                <span class="fw-bold">6.8%</span>
                             </div>
                             <div class="progress" style="height: 10px;">
-                                <div class="progress-bar bg-success" style="width: 7.1%"></div>
+                                <div class="progress-bar bg-success" style="width: 6.8%"></div>
                             </div>
                         </div>
                         <div class="mb-3">
                             <div class="d-flex justify-content-between mb-1">
-                                <span>6. Social Support</span>
-                                <span class="fw-bold">4.2%</span>
+                                <span>7. Sleep Hours</span>
+                                <span class="fw-bold">5.2%</span>
                             </div>
                             <div class="progress" style="height: 10px;">
-                                <div class="progress-bar" style="width: 4.2%"></div>
+                                <div class="progress-bar" style="width: 5.2%"></div>
                             </div>
                         </div>
                         <div class="mb-3">
                             <div class="d-flex justify-content-between mb-1">
-                                <span>7. Exercise Level</span>
-                                <span class="fw-bold">2.8%</span>
+                                <span>8. Social Support Score</span>
+                                <span class="fw-bold">3.9%</span>
                             </div>
                             <div class="progress" style="height: 10px;">
-                                <div class="progress-bar" style="width: 2.8%"></div>
+                                <div class="progress-bar" style="width: 3.9%"></div>
                             </div>
                         </div>
                         <div class="mb-3">
                             <div class="d-flex justify-content-between mb-1">
-                                <span>8. Age</span>
-                                <span class="fw-bold">1.1%</span>
+                                <span>9. Physical Activity Days</span>
+                                <span class="fw-bold">2.7%</span>
                             </div>
                             <div class="progress" style="height: 10px;">
-                                <div class="progress-bar" style="width: 1.1%"></div>
+                                <div class="progress-bar" style="width: 2.7%"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>10-13. Demographics (Age, Gender, Employment, Work Env)</span>
+                                <span class="fw-bold">3.1%</span>
+                            </div>
+                            <div class="progress" style="height: 10px;">
+                                <div class="progress-bar" style="width: 3.1%"></div>
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div class="alert alert-info mt-4">
+                    <i class="bi bi-lightbulb"></i> <strong>Insight:</strong> Parameter mental & emosional (depression, anxiety, stress) memiliki pengaruh terbesar (58.5%) dalam memprediksi risiko kesehatan mental, diikuti oleh riwayat kesehatan mental dan perilaku mencari bantuan profesional.
                 </div>
             </div>
         </div>

@@ -2,16 +2,16 @@
 
 # Data Configuration
 data:
-  raw_data_path: "data/Data.csv"
+  raw_data_path: "data/mental_health_dataset.csv"
   processed_data_path: "data/processed_data.csv"
   test_size: 0.2
   random_state: 42
 
 # Model Configuration
 model:
-  model_path: "models/mental_health_model.pkl"
-  scaler_path: "models/scaler.pkl"
-  label_encoder_path: "models/label_encoder.pkl"
+  model_path: "models/random_forest_model.pkl"
+  label_encoders_path: "models/label_encoders.pkl"
+  feature_columns_path: "models/feature_columns.pkl"
   algorithm: "random_forest"  # Options: random_forest, logistic_regression, xgboost
   
 # Random Forest Parameters

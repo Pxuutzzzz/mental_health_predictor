@@ -313,7 +313,54 @@
                                 <input type="range" class="form-range" id="age" name="age" min="18" max="80" value="25">
                             </div>
                             
-                            <h5 class="mb-3 mt-4"><i class="fas fa-heart-pulse"></i> Mental Health Indicators</h5>
+                            <div class="mb-4">
+                                <label class="form-label">Gender</label>
+                                <select class="form-select" id="gender" name="gender">
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label">Employment Status</label>
+                                <select class="form-select" id="employment_status" name="employment_status">
+                                    <option value="Employed">Employed</option>
+                                    <option value="Unemployed">Unemployed</option>
+                                    <option value="Student">Student</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label">Work Environment</label>
+                                <select class="form-select" id="work_environment" name="work_environment">
+                                    <option value="Office">Office</option>
+                                    <option value="Remote">Remote</option>
+                                    <option value="Hybrid">Hybrid</option>
+                                </select>
+                            </div>
+                            
+                            <h5 class="mb-3 mt-4"><i class="fas fa-notes-medical"></i> Medical History</h5>
+                            
+                            <div class="mb-4">
+                                <label class="form-label">Mental Health History</label>
+                                <select class="form-select" id="mental_health_history" name="mental_health_history">
+                                    <option value="No">No</option>
+                                    <option value="Yes">Yes</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label">Currently Seeks Treatment</label>
+                                <select class="form-select" id="seeks_treatment" name="seeks_treatment">
+                                    <option value="No">No</option>
+                                    <option value="Yes">Yes</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Lifestyle & Health Scores -->
+                        <div class="col-md-6">
+                            <h5 class="mb-3"><i class="fas fa-heart-pulse"></i> Mental Health Indicators</h5>
                             
                             <div class="mb-4">
                                 <label class="form-label">Stress Level: <span class="range-value" id="stressValue">5</span></label>
@@ -322,66 +369,41 @@
                             </div>
                             
                             <div class="mb-4">
-                                <label class="form-label">Anxiety Level: <span class="range-value" id="anxietyValue">5</span></label>
-                                <input type="range" class="form-range" id="anxiety_level" name="anxiety_level" min="0" max="10" value="5">
-                                <small class="text-muted">0 = No anxiety, 10 = Severe anxiety</small>
+                                <label class="form-label">Depression Score: <span class="range-value" id="depressionValue">15</span></label>
+                                <input type="range" class="form-range" id="depression_score" name="depression_score" min="0" max="50" value="15">
+                                <small class="text-muted">PHQ-9 score: 0-4 None, 5-9 Mild, 10-14 Moderate, 15+ Severe</small>
                             </div>
                             
                             <div class="mb-4">
-                                <label class="form-label">Depression Score: <span class="range-value" id="depressionValue">5</span></label>
-                                <input type="range" class="form-range" id="depression_score" name="depression_score" min="0" max="10" value="5">
-                                <small class="text-muted">0 = None, 10 = Severe</small>
-                            </div>
-                        </div>
-                        
-                        <!-- Lifestyle & History -->
-                        <div class="col-md-6">
-                            <h5 class="mb-3"><i class="fas fa-notes-medical"></i> Medical History</h5>
-                            
-                            <div class="mb-4">
-                                <label class="form-label">Previous Mental Health Issues?</label>
-                                <div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="mental_history" id="historyYes" value="1">
-                                        <label class="form-check-label" for="historyYes">Yes</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="mental_history" id="historyNo" value="0" checked>
-                                        <label class="form-check-label" for="historyNo">No</label>
-                                    </div>
-                                </div>
+                                <label class="form-label">Anxiety Score: <span class="range-value" id="anxietyValue">10</span></label>
+                                <input type="range" class="form-range" id="anxiety_score" name="anxiety_score" min="0" max="30" value="10">
+                                <small class="text-muted">GAD-7 score: 0-4 Minimal, 5-9 Mild, 10-14 Moderate, 15+ Severe</small>
                             </div>
                             
                             <h5 class="mb-3 mt-4"><i class="fas fa-running"></i> Lifestyle Factors</h5>
                             
                             <div class="mb-4">
-                                <label class="form-label">Average Sleep Hours: <span class="range-value" id="sleepValue">7</span></label>
+                                <label class="form-label">Sleep Hours: <span class="range-value" id="sleepValue">7</span></label>
                                 <input type="range" class="form-range" id="sleep_hours" name="sleep_hours" min="0" max="12" step="0.5" value="7">
-                                <small class="text-muted">Hours per night</small>
+                                <small class="text-muted">Average hours per night</small>
                             </div>
                             
                             <div class="mb-4">
-                                <label class="form-label">Exercise Frequency</label>
-                                <select class="form-select" id="exercise_frequency" name="exercise_frequency">
-                                    <option value="0">Low (< 1x per week)</option>
-                                    <option value="1" selected>Medium (2-3x per week)</option>
-                                    <option value="2">High (4+ per week)</option>
-                                </select>
+                                <label class="form-label">Physical Activity Days: <span class="range-value" id="activityValue">3</span></label>
+                                <input type="range" class="form-range" id="physical_activity_days" name="physical_activity_days" min="0" max="7" value="3">
+                                <small class="text-muted">Days per week with physical activity</small>
                             </div>
                             
                             <div class="mb-4">
-                                <label class="form-label">Strong Social Support?</label>
-                                <div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="social_support" id="supportYes" value="1" checked>
-                                        <label class="form-check-label" for="supportYes">Yes</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="social_support" id="supportNo" value="0">
-                                        <label class="form-check-label" for="supportNo">No</label>
-                                    </div>
-                                </div>
-                                <small class="text-muted">Do you have friends/family you can rely on?</small>
+                                <label class="form-label">Social Support Score: <span class="range-value" id="socialValue">50</span></label>
+                                <input type="range" class="form-range" id="social_support_score" name="social_support_score" min="0" max="100" value="50">
+                                <small class="text-muted">0 = No support, 100 = Strong support system</small>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label">Productivity Score: <span class="range-value" id="productivityValue">70</span></label>
+                                <input type="range" class="form-range" id="productivity_score" name="productivity_score" min="0" max="100" value="70">
+                                <small class="text-muted">0 = Very low productivity, 100 = Highly productive</small>
                             </div>
                         </div>
                     </div>
@@ -486,16 +508,28 @@
             document.getElementById('stressValue').textContent = e.target.value;
         });
         
-        document.getElementById('anxiety_level').addEventListener('input', function(e) {
-            document.getElementById('anxietyValue').textContent = e.target.value;
-        });
-        
         document.getElementById('depression_score').addEventListener('input', function(e) {
             document.getElementById('depressionValue').textContent = e.target.value;
         });
         
+        document.getElementById('anxiety_score').addEventListener('input', function(e) {
+            document.getElementById('anxietyValue').textContent = e.target.value;
+        });
+        
         document.getElementById('sleep_hours').addEventListener('input', function(e) {
             document.getElementById('sleepValue').textContent = e.target.value;
+        });
+        
+        document.getElementById('physical_activity_days').addEventListener('input', function(e) {
+            document.getElementById('activityValue').textContent = e.target.value;
+        });
+        
+        document.getElementById('social_support_score').addEventListener('input', function(e) {
+            document.getElementById('socialValue').textContent = e.target.value;
+        });
+        
+        document.getElementById('productivity_score').addEventListener('input', function(e) {
+            document.getElementById('productivityValue').textContent = e.target.value;
         });
         
         // Chart instance
@@ -512,13 +546,18 @@
             // Collect form data
             const formData = {
                 age: parseInt(document.getElementById('age').value),
+                gender: document.getElementById('gender').value,
+                employment_status: document.getElementById('employment_status').value,
+                work_environment: document.getElementById('work_environment').value,
+                mental_health_history: document.getElementById('mental_health_history').value,
+                seeks_treatment: document.getElementById('seeks_treatment').value,
                 stress_level: parseInt(document.getElementById('stress_level').value),
-                anxiety_level: parseInt(document.getElementById('anxiety_level').value),
-                depression_score: parseInt(document.getElementById('depression_score').value),
-                mental_history: parseInt(document.querySelector('input[name="mental_history"]:checked').value),
                 sleep_hours: parseFloat(document.getElementById('sleep_hours').value),
-                exercise_frequency: parseInt(document.getElementById('exercise_frequency').value),
-                social_support: parseInt(document.querySelector('input[name="social_support"]:checked').value)
+                physical_activity_days: parseInt(document.getElementById('physical_activity_days').value),
+                depression_score: parseInt(document.getElementById('depression_score').value),
+                anxiety_score: parseInt(document.getElementById('anxiety_score').value),
+                social_support_score: parseInt(document.getElementById('social_support_score').value),
+                productivity_score: parseInt(document.getElementById('productivity_score').value)
             };
             
             try {

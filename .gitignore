@@ -43,7 +43,7 @@ models/*.h5
 models/*.pt
 models/*.pth
 data/processed_data.csv
-!data/Data.csv
+!data/mental_health_dataset.csv
 
 # Logs
 logs/*.log

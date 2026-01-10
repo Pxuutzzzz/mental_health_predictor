@@ -5,11 +5,19 @@
  */
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$filepath = __DIR__ . $uri;
 
-// If it's a static file and exists, let PHP serve it
-if ($uri !== '/' && is_file($filepath)) {
-    return false; // Let PHP's built-in server handle it
+// Serve static files and PHP files in root directly
+if ($uri !== '/') {
+    $filepath = __DIR__ . $uri;
+    if (is_file($filepath)) {
+        // For .php files, execute them
+        if (pathinfo($filepath, PATHINFO_EXTENSION) === 'php') {
+            require $filepath;
+            return;
+        }
+        // For other files (css, js, images), let PHP serve them
+        return false;
+    }
 }
 
 // Otherwise, route to index.php

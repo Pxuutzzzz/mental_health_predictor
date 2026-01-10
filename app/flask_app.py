@@ -88,8 +88,10 @@ def predict():
         
         # Validate required fields
         required_fields = [
-            'age', 'stress_level', 'anxiety_level', 'depression_score',
-            'mental_history', 'sleep_hours', 'exercise_frequency', 'social_support'
+            'age', 'gender', 'employment_status', 'work_environment',
+            'mental_health_history', 'seeks_treatment', 'stress_level',
+            'sleep_hours', 'physical_activity_days', 'depression_score',
+            'anxiety_score', 'social_support_score', 'productivity_score'
         ]
         
         for field in required_fields:
@@ -145,26 +147,31 @@ def health_check():
 def demo_prediction(data):
     """Demo prediction when model is not available"""
     stress = data.get('stress_level', 5)
-    anxiety = data.get('anxiety_level', 5)
-    depression = data.get('depression_score', 5)
+    depression = data.get('depression_score', 15)
+    anxiety = data.get('anxiety_score', 10)
     
-    risk_score = (stress + anxiety + depression) / 30
+    # Calculate risk score based on mental health indicators
+    risk_score = ((stress / 10) * 0.3 + (depression / 50) * 0.4 + (anxiety / 30) * 0.3)
     
-    if risk_score > 0.7:
-        prediction = "High Risk"
+    if risk_score > 0.6:
+        prediction = "High"
         confidence = 0.85
-    elif risk_score > 0.4:
-        prediction = "Moderate Risk"
+    elif risk_score > 0.35:
+        prediction = "Medium"
         confidence = 0.78
     else:
-        prediction = "Low Risk"
+        prediction = "Low"
         confidence = 0.82
     
     probabilities = {
-        "Low Risk": max(0, 1 - risk_score),
-        "Moderate Risk": 0.3 if risk_score > 0.4 else 0.2,
-        "High Risk": max(0, risk_score - 0.3)
+        "Low": max(0, 1 - risk_score - 0.2),
+        "Medium": 0.4 if risk_score > 0.3 else 0.3,
+        "High": max(0, risk_score - 0.2)
     }
+    
+    # Normalize probabilities
+    total = sum(probabilities.values())
+    probabilities = {k: v/total for k, v in probabilities.items()}
     
     return prediction, confidence, probabilities
 
@@ -200,44 +207,47 @@ def get_recommendations(prediction, data):
     
     if "High" in prediction:
         recommendations = [
-            "Consider consulting a mental health professional immediately",
-            "Reach out to trusted friends or family members",
-            "Practice stress-reduction techniques (meditation, deep breathing)",
-            "Ensure adequate sleep (7-9 hours per night)",
-            "Engage in regular physical activity",
-            "Avoid alcohol and substance use",
-            "Contact crisis helpline if feeling overwhelmed"
+            "🚨 Consider consulting a mental health professional immediately",
+            "👥 Reach out to trusted friends or family members",
+            "🧘 Practice stress-reduction techniques (meditation, deep breathing)",
+            "😴 Ensure adequate sleep (7-9 hours per night)",
+            "🏃 Engage in regular physical activity",
+            "🚫 Avoid alcohol and substance use",
+            "📞 Contact crisis helpline if feeling overwhelmed (988 Suicide & Crisis Lifeline)"
         ]
-    elif "Moderate" in prediction:
+    elif "Medium" in prediction:
         recommendations = [
-            "Monitor your mental health regularly",
-            "Maintain healthy sleep patterns",
-            "Practice mindfulness or meditation daily",
-            "Stay connected with supportive people",
-            "Consider speaking with a counselor or therapist",
-            "Exercise at least 30 minutes daily",
-            "Limit caffeine and maintain balanced diet"
+            "📊 Monitor your mental health regularly",
+            "😴 Maintain healthy sleep patterns (7-9 hours)",
+            "🧘 Practice mindfulness or meditation daily",
+            "👫 Stay connected with supportive people",
+            "💬 Consider speaking with a counselor or therapist",
+            "🏃 Exercise at least 30 minutes daily",
+            "🥗 Limit caffeine and maintain balanced diet"
         ]
     else:
         recommendations = [
-            "Continue maintaining healthy lifestyle habits",
-            "Stay socially connected with friends and family",
-            "Practice regular self-care activities",
-            "Monitor for any changes in mood or behavior",
-            "Help others who may be struggling",
-            "Keep a consistent sleep schedule",
-            "Engage in hobbies and activities you enjoy"
+            "✅ Continue maintaining healthy lifestyle habits",
+            "👨‍👩‍👧 Stay socially connected with friends and family",
+            "💆 Practice regular self-care activities",
+            "📝 Monitor for any changes in mood or behavior",
+            "🤝 Help others who may be struggling",
+            "😴 Keep a consistent sleep schedule",
+            "🎨 Engage in hobbies and activities you enjoy"
         ]
     
     # Add specific recommendations based on input
     if data.get('sleep_hours', 7) < 6:
-        recommendations.insert(1, "Prioritize getting more sleep (aim for 7-9 hours)")
+        recommendations.insert(1, "⚠️ Prioritize getting more sleep (aim for 7-9 hours)")
     
-    if data.get('exercise_frequency', 1) == 0:  # Low exercise
-        recommendations.insert(2, "Increase physical activity gradually")
+    if data.get('physical_activity_days', 3) < 2:
+        recommendations.insert(2, "🏃 Increase physical activity gradually (aim for 3+ days/week)")
     
-    if data.get('social_support', 1) == 0:  # No social support
-        recommendations.insert(1, "Build a support network through groups or activities")
+    if data.get('social_support_score', 50) < 30:
+        recommendations.insert(1, "👥 Build a support network through groups or activities")
+    
+    if data.get('stress_level', 5) >= 8:
+        recommendations.insert(1, "😌 Practice stress management techniques immediately")
     
     return recommendations
 

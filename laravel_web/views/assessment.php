@@ -444,8 +444,8 @@ ob_start();
     <!-- Welcome Card -->
     <div class="welcome-card">
         <i class="bi bi-heart-pulse" style="font-size: 48px; margin-bottom: 20px;"></i>
-        <h2>Kuesioner Kesehatan Mental</h2>
-        <p>Jawab 8 pertanyaan singkat untuk mendapatkan analisis AI tentang kondisi kesehatan mental Anda</p>
+        <h2>Asesmen Kesehatan Mental</h2>
+        <p>Jawab 13 pertanyaan singkat untuk mendapatkan analisis AI tentang kondisi kesehatan mental Anda menggunakan Machine Learning</p>
         <div class="mt-3">
             <div class="info-badge">
                 <i class="bi bi-shield-check"></i> 100% Aman & Rahasia
@@ -487,21 +487,42 @@ ob_start();
     <form id="questionnaireForm">
         <!-- Question 1: Age -->
         <div class="question-card active" data-question="1">
-            <div class="question-number">Pertanyaan 1 dari 8</div>
+            <div class="question-number">Pertanyaan 1 dari 13</div>
             <h3 class="question-title">Berapa usia Anda?</h3>
-            <p class="question-subtitle">Usia membantu kami memberikan rekomendasi yang lebih personal</p>
+            <p class="question-subtitle">Ceritakan sedikit tentang diri Anda untuk membantu kami memberikan rekomendasi yang lebih personal</p>
             
-            <div class="slider-container">
-                <div class="slider-value-display">
-                    <div class="slider-value-number" id="ageDisplay">25</div>
-                    <div class="slider-value-label">tahun</div>
+            <div class="radio-card-group">
+                <div class="radio-card">
+                    <input type="radio" name="age" id="age_18_25" value="22" checked>
+                    <label for="age_18_25">
+                        <div class="radio-card-icon">🧒</div>
+                        <div class="radio-card-title">18-25 tahun</div>
+                        <div class="radio-card-desc">Dewasa muda</div>
+                    </label>
                 </div>
-                <input type="range" class="form-range" name="age" id="age" 
-                       min="18" max="80" value="25" 
-                       oninput="document.getElementById('ageDisplay').textContent = this.value">
-                <div class="slider-labels">
-                    <span>18 tahun</span>
-                    <span>80 tahun</span>
+                <div class="radio-card">
+                    <input type="radio" name="age" id="age_26_35" value="30">
+                    <label for="age_26_35">
+                        <div class="radio-card-icon">👨</div>
+                        <div class="radio-card-title">26-35 tahun</div>
+                        <div class="radio-card-desc">Dewasa</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="age" id="age_36_50" value="43">
+                    <label for="age_36_50">
+                        <div class="radio-card-icon">👨‍💼</div>
+                        <div class="radio-card-title">36-50 tahun</div>
+                        <div class="radio-card-desc">Dewasa matang</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="age" id="age_51_plus" value="60">
+                    <label for="age_51_plus">
+                        <div class="radio-card-icon">👴</div>
+                        <div class="radio-card-title">51+ tahun</div>
+                        <div class="radio-card-desc">Lansia</div>
+                    </label>
                 </div>
             </div>
             
@@ -515,11 +536,132 @@ ob_start();
             </div>
         </div>
 
-        <!-- Question 2: Mental History -->
+        <!-- Question 2: Gender -->
         <div class="question-card" data-question="2">
-            <div class="question-number">Pertanyaan 2 dari 8</div>
-            <h3 class="question-title">Apakah Anda pernah didiagnosis dengan masalah kesehatan mental?</h3>
-            <p class="question-subtitle">Riwayat kesehatan mental membantu kami memahami kondisi Anda</p>
+            <div class="question-number">Pertanyaan 2 dari 13</div>
+            <h3 class="question-title">Apa jenis kelamin Anda?</h3>
+            <p class="question-subtitle">Informasi ini membantu personalisasi analisis</p>
+            
+            <div class="radio-card-group">
+                <div class="radio-card">
+                    <input type="radio" name="gender" id="gender_female" value="Female" checked>
+                    <label for="gender_female">
+                        <div class="radio-card-icon">👩</div>
+                        <div class="radio-card-title">Perempuan</div>
+                        <div class="radio-card-desc">Female</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="gender" id="gender_male" value="Male">
+                    <label for="gender_male">
+                        <div class="radio-card-icon">👨</div>
+                        <div class="radio-card-title">Laki-laki</div>
+                        <div class="radio-card-desc">Male</div>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="wizard-navigation">
+                <button type="button" class="btn btn-secondary btn-wizard" onclick="prevQuestion(1)">
+                    <i class="bi bi-arrow-left"></i> Sebelumnya
+                </button>
+                <button type="button" class="btn btn-primary btn-wizard" onclick="nextQuestion(3)">
+                    Lanjut <i class="bi bi-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Question 3: Employment Status -->
+        <div class="question-card" data-question="3">
+            <div class="question-number">Pertanyaan 3 dari 13</div>
+            <h3 class="question-title">Apa status pekerjaan Anda saat ini?</h3>
+            <p class="question-subtitle">Status pekerjaan mempengaruhi tingkat stress dan kesehatan mental</p>
+            
+            <div class="radio-card-group">
+                <div class="radio-card">
+                    <input type="radio" name="employment_status" id="emp_employed" value="Employed" checked>
+                    <label for="emp_employed">
+                        <div class="radio-card-icon">💼</div>
+                        <div class="radio-card-title">Bekerja</div>
+                        <div class="radio-card-desc">Karyawan/Wiraswasta</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="employment_status" id="emp_unemployed" value="Unemployed">
+                    <label for="emp_unemployed">
+                        <div class="radio-card-icon">🏠</div>
+                        <div class="radio-card-title">Tidak Bekerja</div>
+                        <div class="radio-card-desc">Mencari pekerjaan/Lainnya</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="employment_status" id="emp_student" value="Student">
+                    <label for="emp_student">
+                        <div class="radio-card-icon">🎓</div>
+                        <div class="radio-card-title">Pelajar/Mahasiswa</div>
+                        <div class="radio-card-desc">Sedang menempuh pendidikan</div>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="wizard-navigation">
+                <button type="button" class="btn btn-secondary btn-wizard" onclick="prevQuestion(2)">
+                    <i class="bi bi-arrow-left"></i> Sebelumnya
+                </button>
+                <button type="button" class="btn btn-primary btn-wizard" onclick="nextQuestion(4)">
+                    Lanjut <i class="bi bi-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Question 4: Work Environment -->
+        <div class="question-card" data-question="4">
+            <div class="question-number">Pertanyaan 4 dari 13</div>
+            <h3 class="question-title">Bagaimana lingkungan kerja/belajar Anda?</h3>
+            <p class="question-subtitle">Lingkungan kerja mempengaruhi tingkat stress dan produktivitas</p>
+            
+            <div class="radio-card-group">
+                <div class="radio-card">
+                    <input type="radio" name="work_environment" id="env_office" value="Office" checked>
+                    <label for="env_office">
+                        <div class="radio-card-icon">🏢</div>
+                        <div class="radio-card-title">Kantor/Kampus</div>
+                        <div class="radio-card-desc">Bekerja di tempat</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="work_environment" id="env_remote" value="Remote">
+                    <label for="env_remote">
+                        <div class="radio-card-icon">🏠</div>
+                        <div class="radio-card-title">Remote (WFH)</div>
+                        <div class="radio-card-desc">Dari rumah</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="work_environment" id="env_hybrid" value="Hybrid">
+                    <label for="env_hybrid">
+                        <div class="radio-card-icon">🔄</div>
+                        <div class="radio-card-title">Hybrid</div>
+                        <div class="radio-card-desc">Kombinasi</div>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="wizard-navigation">
+                <button type="button" class="btn btn-secondary btn-wizard" onclick="prevQuestion(3)">
+                    <i class="bi bi-arrow-left"></i> Sebelumnya
+                </button>
+                <button type="button" class="btn btn-primary btn-wizard" onclick="nextQuestion(5)">
+                    Lanjut <i class="bi bi-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Question 5: Mental History -->
+        <div class="question-card" data-question="5">
+            <div class="question-number">Pertanyaan 5 dari 13</div>
+            <h3 class="question-title">Apakah Anda memiliki riwayat gangguan kesehatan mental sebelumnya?</h3>
+            <p class="question-subtitle">Contoh: depresi, kecemasan/anxiety, gangguan panik, PTSD, dll.</p>
             
             <div class="radio-card-group">
                 <div class="radio-card">
@@ -541,96 +683,6 @@ ob_start();
             </div>
             
             <div class="wizard-navigation">
-                <button type="button" class="btn btn-secondary btn-wizard" onclick="prevQuestion(1)">
-                    <i class="bi bi-arrow-left"></i> Sebelumnya
-                </button>
-                <button type="button" class="btn btn-primary btn-wizard" onclick="nextQuestion(3)">
-                    Lanjut <i class="bi bi-arrow-right"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- Question 3: Stress Level -->
-        <div class="question-card" data-question="3">
-            <div class="question-number">Pertanyaan 3 dari 8</div>
-            <h3 class="question-title">Seberapa tinggi tingkat stres Anda saat ini?</h3>
-            <p class="question-subtitle">Skala 0 (tidak ada stres) hingga 10 (sangat stres)</p>
-            
-            <div class="slider-container">
-                <div class="slider-value-display">
-                    <div class="slider-value-number" id="stressDisplay">5</div>
-                    <div class="slider-value-label">dari 10</div>
-                </div>
-                <input type="range" class="form-range" name="stress" id="stress" 
-                       min="0" max="10" value="5" 
-                       oninput="document.getElementById('stressDisplay').textContent = this.value">
-                <div class="slider-labels">
-                    <span>😊 Tidak Stres</span>
-                    <span>😰 Sangat Stres</span>
-                </div>
-            </div>
-            
-            <div class="wizard-navigation">
-                <button type="button" class="btn btn-secondary btn-wizard" onclick="prevQuestion(2)">
-                    <i class="bi bi-arrow-left"></i> Sebelumnya
-                </button>
-                <button type="button" class="btn btn-primary btn-wizard" onclick="nextQuestion(4)">
-                    Lanjut <i class="bi bi-arrow-right"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- Question 4: Anxiety Level -->
-        <div class="question-card" data-question="4">
-            <div class="question-number">Pertanyaan 4 dari 8</div>
-            <h3 class="question-title">Seberapa sering Anda merasa cemas atau khawatir?</h3>
-            <p class="question-subtitle">Skala 0 (tidak pernah) hingga 10 (sangat sering)</p>
-            
-            <div class="slider-container">
-                <div class="slider-value-display">
-                    <div class="slider-value-number" id="anxietyDisplay">5</div>
-                    <div class="slider-value-label">dari 10</div>
-                </div>
-                <input type="range" class="form-range" name="anxiety" id="anxiety" 
-                       min="0" max="10" value="5" 
-                       oninput="document.getElementById('anxietyDisplay').textContent = this.value">
-                <div class="slider-labels">
-                    <span>😌 Tenang</span>
-                    <span>😟 Sangat Cemas</span>
-                </div>
-            </div>
-            
-            <div class="wizard-navigation">
-                <button type="button" class="btn btn-secondary btn-wizard" onclick="prevQuestion(3)">
-                    <i class="bi bi-arrow-left"></i> Sebelumnya
-                </button>
-                <button type="button" class="btn btn-primary btn-wizard" onclick="nextQuestion(5)">
-                    Lanjut <i class="bi bi-arrow-right"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- Question 5: Depression Level -->
-        <div class="question-card" data-question="5">
-            <div class="question-number">Pertanyaan 5 dari 8</div>
-            <h3 class="question-title">Seberapa sering Anda merasa sedih atau murung?</h3>
-            <p class="question-subtitle">Skala 0 (tidak pernah) hingga 10 (sangat sering)</p>
-            
-            <div class="slider-container">
-                <div class="slider-value-display">
-                    <div class="slider-value-number" id="depressionDisplay">5</div>
-                    <div class="slider-value-label">dari 10</div>
-                </div>
-                <input type="range" class="form-range" name="depression" id="depression" 
-                       min="0" max="10" value="5" 
-                       oninput="document.getElementById('depressionDisplay').textContent = this.value">
-                <div class="slider-labels">
-                    <span>😊 Bahagia</span>
-                    <span>😢 Sangat Sedih</span>
-                </div>
-            </div>
-            
-            <div class="wizard-navigation">
                 <button type="button" class="btn btn-secondary btn-wizard" onclick="prevQuestion(4)">
                     <i class="bi bi-arrow-left"></i> Sebelumnya
                 </button>
@@ -640,23 +692,28 @@ ob_start();
             </div>
         </div>
 
-        <!-- Question 6: Sleep Hours -->
+        <!-- Question 6: Seeks Treatment -->
         <div class="question-card" data-question="6">
-            <div class="question-number">Pertanyaan 6 dari 8</div>
-            <h3 class="question-title">Berapa jam Anda tidur rata-rata per hari?</h3>
-            <p class="question-subtitle">Kualitas tidur sangat mempengaruhi kesehatan mental</p>
+            <div class="question-number">Pertanyaan 6 dari 13</div>
+            <h3 class="question-title">Apakah Anda saat ini sedang mencari atau mendapat bantuan profesional?</h3>
+            <p class="question-subtitle">Seperti berkonsultasi dengan psikolog, psikiater, atau konselor</p>
             
-            <div class="slider-container">
-                <div class="slider-value-display">
-                    <div class="slider-value-number" id="sleepDisplay">7.0</div>
-                    <div class="slider-value-label">jam per hari</div>
+            <div class="radio-card-group">
+                <div class="radio-card">
+                    <input type="radio" name="seeks_treatment" id="treatment_no" value="No" checked>
+                    <label for="treatment_no">
+                        <div class="radio-card-icon">❌</div>
+                        <div class="radio-card-title">Tidak</div>
+                        <div class="radio-card-desc">Tidak sedang konseling</div>
+                    </label>
                 </div>
-                <input type="range" class="form-range" name="sleep" id="sleep" 
-                       min="0" max="12" step="0.5" value="7" 
-                       oninput="document.getElementById('sleepDisplay').textContent = this.value">
-                <div class="slider-labels">
-                    <span>😴 0 jam</span>
-                    <span>😴 12 jam</span>
+                <div class="radio-card">
+                    <input type="radio" name="seeks_treatment" id="treatment_yes" value="Yes">
+                    <label for="treatment_yes">
+                        <div class="radio-card-icon">✅</div>
+                        <div class="radio-card-title">Ya</div>
+                        <div class="radio-card-desc">Sedang konseling/terapi</div>
+                    </label>
                 </div>
             </div>
             
@@ -670,35 +727,80 @@ ob_start();
             </div>
         </div>
 
-        <!-- Question 7: Exercise Level -->
+        <!-- Question 7: Stress Level -->
         <div class="question-card" data-question="7">
-            <div class="question-number">Pertanyaan 7 dari 8</div>
-            <h3 class="question-title">Seberapa sering Anda berolahraga?</h3>
-            <p class="question-subtitle">Aktivitas fisik membantu menjaga kesehatan mental</p>
+            <div class="question-number">Pertanyaan 7 dari 13</div>
+            <h3 class="question-title">Seberapa tinggi tingkat stress yang Anda rasakan?</h3>
+            <p class="question-subtitle">Skala 0 (sangat tenang) hingga 10 (sangat stress)</p>
             
-            <div class="radio-card-group">
+            <div class="radio-card-group" style="grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));">
                 <div class="radio-card">
-                    <input type="radio" name="exercise" id="exercise_low" value="Low" checked>
-                    <label for="exercise_low">
-                        <div class="radio-card-icon">🚶</div>
-                        <div class="radio-card-title">Jarang</div>
-                        <div class="radio-card-desc">< 1x seminggu</div>
+                    <input type="radio" name="stress_level" id="stress_0" value="0">
+                    <label for="stress_0">
+                        <div class="radio-card-title">0</div>
+                        <div class="radio-card-desc" style="font-size: 20px;">😊</div>
                     </label>
                 </div>
                 <div class="radio-card">
-                    <input type="radio" name="exercise" id="exercise_medium" value="Medium">
-                    <label for="exercise_medium">
-                        <div class="radio-card-icon">🏃</div>
-                        <div class="radio-card-title">Sedang</div>
-                        <div class="radio-card-desc">1-3x seminggu</div>
+                    <input type="radio" name="stress_level" id="stress_1" value="1">
+                    <label for="stress_1">
+                        <div class="radio-card-title">1</div>
                     </label>
                 </div>
                 <div class="radio-card">
-                    <input type="radio" name="exercise" id="exercise_high" value="High">
-                    <label for="exercise_high">
-                        <div class="radio-card-icon">💪</div>
-                        <div class="radio-card-title">Sering</div>
-                        <div class="radio-card-desc">> 3x seminggu</div>
+                    <input type="radio" name="stress_level" id="stress_2" value="2">
+                    <label for="stress_2">
+                        <div class="radio-card-title">2</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="stress_level" id="stress_3" value="3">
+                    <label for="stress_3">
+                        <div class="radio-card-title">3</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="stress_level" id="stress_4" value="4">
+                    <label for="stress_4">
+                        <div class="radio-card-title">4</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="stress_level" id="stress_5" value="5" checked>
+                    <label for="stress_5">
+                        <div class="radio-card-title">5</div>
+                        <div class="radio-card-desc" style="font-size: 20px;">😐</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="stress_level" id="stress_6" value="6">
+                    <label for="stress_6">
+                        <div class="radio-card-title">6</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="stress_level" id="stress_7" value="7">
+                    <label for="stress_7">
+                        <div class="radio-card-title">7</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="stress_level" id="stress_8" value="8">
+                    <label for="stress_8">
+                        <div class="radio-card-title">8</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="stress_level" id="stress_9" value="9">
+                    <label for="stress_9">
+                        <div class="radio-card-title">9</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="stress_level" id="stress_10" value="10">
+                    <label for="stress_10">
+                        <div class="radio-card-title">10</div>
+                        <div class="radio-card-desc" style="font-size: 20px;">😰</div>
                     </label>
                 </div>
             </div>
@@ -713,27 +815,346 @@ ob_start();
             </div>
         </div>
 
-        <!-- Question 8: Social Support -->
+        <!-- Question 8: Depression Score -->
         <div class="question-card" data-question="8">
-            <div class="question-number">Pertanyaan 8 dari 8</div>
-            <h3 class="question-title">Apakah Anda memiliki dukungan sosial yang baik?</h3>
-            <p class="question-subtitle">Keluarga, teman, atau orang terdekat yang dapat Anda andalkan</p>
+            <div class="question-number">Pertanyaan 8 dari 13</div>
+            <h3 class="question-title">Skor Depresi - Seberapa sering Anda merasa sedih/tidak bersemangat?</h3>
+            <p class="question-subtitle">Pilih kategori yang paling sesuai dengan kondisi Anda (PHQ-9)</p>
             
             <div class="radio-card-group">
                 <div class="radio-card">
-                    <input type="radio" name="social_support" id="support_no" value="No">
-                    <label for="support_no">
-                        <div class="radio-card-icon">😞</div>
-                        <div class="radio-card-title">Tidak</div>
-                        <div class="radio-card-desc">Saya merasa sendirian</div>
+                    <input type="radio" name="depression_score" id="dep_minimal" value="2" checked>
+                    <label for="dep_minimal">
+                        <div class="radio-card-icon">😊</div>
+                        <div class="radio-card-title">Minimal</div>
+                        <div class="radio-card-desc">Skor 0-4: Tidak pernah</div>
                     </label>
                 </div>
                 <div class="radio-card">
-                    <input type="radio" name="social_support" id="support_yes" value="Yes" checked>
-                    <label for="support_yes">
+                    <input type="radio" name="depression_score" id="dep_ringan" value="7">
+                    <label for="dep_ringan">
+                        <div class="radio-card-icon">🙂</div>
+                        <div class="radio-card-title">Ringan</div>
+                        <div class="radio-card-desc">Skor 5-9: Kadang-kadang</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="depression_score" id="dep_sedang" value="12">
+                    <label for="dep_sedang">
+                        <div class="radio-card-icon">😕</div>
+                        <div class="radio-card-title">Sedang</div>
+                        <div class="radio-card-desc">Skor 10-14: Cukup sering</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="depression_score" id="dep_cukup_parah" value="17">
+                    <label for="dep_cukup_parah">
+                        <div class="radio-card-icon">😟</div>
+                        <div class="radio-card-title">Cukup Parah</div>
+                        <div class="radio-card-desc">Skor 15-19: Sering</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="depression_score" id="dep_parah" value="25">
+                    <label for="dep_parah">
+                        <div class="radio-card-icon">😢</div>
+                        <div class="radio-card-title">Parah</div>
+                        <div class="radio-card-desc">Skor 20+: Sangat sering</div>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="wizard-navigation">
+                <button type="button" class="btn btn-secondary btn-wizard" onclick="prevQuestion(7)">
+                    <i class="bi bi-arrow-left"></i> Sebelumnya
+                </button>
+                <button type="button" class="btn btn-primary btn-wizard" onclick="nextQuestion(9)">
+                    Lanjut <i class="bi bi-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Question 9: Anxiety Score -->
+        <div class="question-card" data-question="9">
+            <div class="question-number">Pertanyaan 9 dari 13</div>
+            <h3 class="question-title">Skor Kecemasan - Seberapa sering Anda merasa cemas/khawatir berlebihan?</h3>
+            <p class="question-subtitle">Pilih kategori yang paling sesuai dengan kondisi Anda (GAD-7)</p>
+            
+            <div class="radio-card-group">
+                <div class="radio-card">
+                    <input type="radio" name="anxiety_score" id="anx_minimal" value="2" checked>
+                    <label for="anx_minimal">
+                        <div class="radio-card-icon">😌</div>
+                        <div class="radio-card-title">Minimal</div>
+                        <div class="radio-card-desc">Skor 0-4: Tenang</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="anxiety_score" id="anx_ringan" value="7">
+                    <label for="anx_ringan">
+                        <div class="radio-card-icon">🙂</div>
+                        <div class="radio-card-title">Ringan</div>
+                        <div class="radio-card-desc">Skor 5-9: Kadang cemas</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="anxiety_score" id="anx_sedang" value="12">
+                    <label for="anx_sedang">
+                        <div class="radio-card-icon">😟</div>
+                        <div class="radio-card-title">Sedang</div>
+                        <div class="radio-card-desc">Skor 10-14: Sering cemas</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="anxiety_score" id="anx_parah" value="20">
+                    <label for="anx_parah">
+                        <div class="radio-card-icon">😨</div>
+                        <div class="radio-card-title">Parah</div>
+                        <div class="radio-card-desc">Skor 15+: Sangat cemas</div>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="wizard-navigation">
+                <button type="button" class="btn btn-secondary btn-wizard" onclick="prevQuestion(8)">
+                    <i class="bi bi-arrow-left"></i> Sebelumnya
+                </button>
+                <button type="button" class="btn btn-primary btn-wizard" onclick="nextQuestion(10)">
+                    Lanjut <i class="bi bi-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Question 10: Sleep Hours -->
+        <div class="question-card" data-question="10">
+            <div class="question-number">Pertanyaan 10 dari 13</div>
+            <h3 class="question-title">Berapa rata-rata jam tidur Anda per malam?</h3>
+            <p class="question-subtitle">Ideal: 7-9 jam per malam untuk orang dewasa</p>
+            
+            <div class="radio-card-group">
+                <div class="radio-card">
+                    <input type="radio" name="sleep_hours" id="sleep_poor" value="4">
+                    <label for="sleep_poor">
+                        <div class="radio-card-icon">😴</div>
+                        <div class="radio-card-title">< 5 jam</div>
+                        <div class="radio-card-desc">Kurang tidur</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="sleep_hours" id="sleep_low" value="6">
+                    <label for="sleep_low">
+                        <div class="radio-card-icon">😪</div>
+                        <div class="radio-card-title">5-6 jam</div>
+                        <div class="radio-card-desc">Kurang ideal</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="sleep_hours" id="sleep_good" value="7.5" checked>
+                    <label for="sleep_good">
+                        <div class="radio-card-icon">😊</div>
+                        <div class="radio-card-title">7-8 jam</div>
+                        <div class="radio-card-desc">Ideal</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="sleep_hours" id="sleep_high" value="9">
+                    <label for="sleep_high">
+                        <div class="radio-card-icon">😴</div>
+                        <div class="radio-card-title">9+ jam</div>
+                        <div class="radio-card-desc">Banyak tidur</div>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="wizard-navigation">
+                <button type="button" class="btn btn-secondary btn-wizard" onclick="prevQuestion(9)">
+                    <i class="bi bi-arrow-left"></i> Sebelumnya
+                </button>
+                <button type="button" class="btn btn-primary btn-wizard" onclick="nextQuestion(11)">
+                    Lanjut <i class="bi bi-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Question 11: Physical Activity Days -->
+        <div class="question-card" data-question="11">
+            <div class="question-number">Pertanyaan 11 dari 13</div>
+            <h3 class="question-title">Berapa hari dalam seminggu Anda melakukan aktivitas fisik/olahraga?</h3>
+            <p class="question-subtitle">Termasuk jalan kaki, jogging, gym, olahraga ringan, berkebun, dll.</p>
+            
+            <div class="radio-card-group" style="grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));">
+                <div class="radio-card">
+                    <input type="radio" name="physical_activity_days" id="activity_0" value="0">
+                    <label for="activity_0">
+                        <div class="radio-card-icon">🛌</div>
+                        <div class="radio-card-title">0 hari</div>
+                        <div class="radio-card-desc">Tidak aktif</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="physical_activity_days" id="activity_1" value="1">
+                    <label for="activity_1">
+                        <div class="radio-card-title">1 hari</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="physical_activity_days" id="activity_2" value="2">
+                    <label for="activity_2">
+                        <div class="radio-card-title">2 hari</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="physical_activity_days" id="activity_3" value="3" checked>
+                    <label for="activity_3">
+                        <div class="radio-card-icon">🚶</div>
+                        <div class="radio-card-title">3 hari</div>
+                        <div class="radio-card-desc">Cukup aktif</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="physical_activity_days" id="activity_4" value="4">
+                    <label for="activity_4">
+                        <div class="radio-card-title">4 hari</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="physical_activity_days" id="activity_5" value="5">
+                    <label for="activity_5">
+                        <div class="radio-card-icon">🏃</div>
+                        <div class="radio-card-title">5 hari</div>
+                        <div class="radio-card-desc">Aktif</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="physical_activity_days" id="activity_6" value="6">
+                    <label for="activity_6">
+                        <div class="radio-card-title">6 hari</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="physical_activity_days" id="activity_7" value="7">
+                    <label for="activity_7">
+                        <div class="radio-card-icon">💪</div>
+                        <div class="radio-card-title">7 hari</div>
+                        <div class="radio-card-desc">Sangat aktif</div>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="wizard-navigation">
+                <button type="button" class="btn btn-secondary btn-wizard" onclick="prevQuestion(10)">
+                    <i class="bi bi-arrow-left"></i> Sebelumnya
+                </button>
+                <button type="button" class="btn btn-primary btn-wizard" onclick="nextQuestion(12)">
+                    Lanjut <i class="bi bi-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Question 12: Social Support Score -->
+        <div class="question-card" data-question="12">
+            <div class="question-number">Pertanyaan 12 dari 13</div>
+            <h3 class="question-title">Seberapa kuat dukungan sosial yang Anda miliki?</h3>
+            <p class="question-subtitle">Apakah ada keluarga/teman yang bisa Anda andalkan saat butuh bantuan emosional?</p>
+            
+            <div class="radio-card-group">
+                <div class="radio-card">
+                    <input type="radio" name="social_support_score" id="social_very_low" value="10">
+                    <label for="social_very_low">
+                        <div class="radio-card-icon">😞</div>
+                        <div class="radio-card-title">Sangat Rendah</div>
+                        <div class="radio-card-desc">Merasa sangat sendirian</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="social_support_score" id="social_low" value="30">
+                    <label for="social_low">
+                        <div class="radio-card-icon">😕</div>
+                        <div class="radio-card-title">Rendah</div>
+                        <div class="radio-card-desc">Kurang dukungan</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="social_support_score" id="social_medium" value="50" checked>
+                    <label for="social_medium">
+                        <div class="radio-card-icon">🙂</div>
+                        <div class="radio-card-title">Sedang</div>
+                        <div class="radio-card-desc">Ada beberapa dukungan</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="social_support_score" id="social_high" value="75">
+                    <label for="social_high">
+                        <div class="radio-card-icon">😊</div>
+                        <div class="radio-card-title">Tinggi</div>
+                        <div class="radio-card-desc">Banyak dukungan</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="social_support_score" id="social_very_high" value="95">
+                    <label for="social_very_high">
                         <div class="radio-card-icon">🤗</div>
-                        <div class="radio-card-title">Ya</div>
-                        <div class="radio-card-desc">Saya memiliki dukungan</div>
+                        <div class="radio-card-title">Sangat Tinggi</div>
+                        <div class="radio-card-desc">Sangat didukung</div>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="wizard-navigation">
+                <button type="button" class="btn btn-secondary btn-wizard" onclick="prevQuestion(11)">
+                    <i class="bi bi-arrow-left"></i> Sebelumnya
+                </button>
+                <button type="button" class="btn btn-primary btn-wizard" onclick="nextQuestion(13)">
+                    Lanjut <i class="bi bi-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Question 13: Productivity Score -->
+        <div class="question-card" data-question="13">
+            <div class="question-number">Pertanyaan 13 dari 13</div>
+            <h3 class="question-title">Bagaimana tingkat produktivitas Anda akhir-akhir ini?</h3>
+            <p class="question-subtitle">Apakah Anda bisa menyelesaikan tugas-tugas sehari-hari dengan baik?</p>
+            
+            <div class="radio-card-group">
+                <div class="radio-card">
+                    <input type="radio" name="productivity_score" id="prod_very_low" value="10">
+                    <label for="prod_very_low">
+                        <div class="radio-card-icon">😫</div>
+                        <div class="radio-card-title">Sangat Rendah</div>
+                        <div class="radio-card-desc">Sulit menyelesaikan tugas</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="productivity_score" id="prod_low" value="30">
+                    <label for="prod_low">
+                        <div class="radio-card-icon">😕</div>
+                        <div class="radio-card-title">Rendah</div>
+                        <div class="radio-card-desc">Kurang produktif</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="productivity_score" id="prod_medium" value="50">
+                    <label for="prod_medium">
+                        <div class="radio-card-icon">😐</div>
+                        <div class="radio-card-title">Sedang</div>
+                        <div class="radio-card-desc">Cukup produktif</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="productivity_score" id="prod_high" value="70" checked>
+                    <label for="prod_high">
+                        <div class="radio-card-icon">😊</div>
+                        <div class="radio-card-title">Tinggi</div>
+                        <div class="radio-card-desc">Produktif</div>
+                    </label>
+                </div>
+                <div class="radio-card">
+                    <input type="radio" name="productivity_score" id="prod_very_high" value="90">
+                    <label for="prod_very_high">
+                        <div class="radio-card-icon">🚀</div>
+                        <div class="radio-card-title">Sangat Tinggi</div>
+                        <div class="radio-card-desc">Sangat produktif</div>
                     </label>
                 </div>
             </div>
@@ -782,7 +1203,7 @@ ob_start();
             <?php endif; ?>
             
             <div class="wizard-navigation">
-                <button type="button" class="btn btn-secondary btn-wizard" onclick="prevQuestion(7)">
+                <button type="button" class="btn btn-secondary btn-wizard" onclick="prevQuestion(12)">
                     <i class="bi bi-arrow-left"></i> Sebelumnya
                 </button>
                 <button type="button" class="btn btn-success btn-wizard" onclick="submitQuestionnaire()">
@@ -865,7 +1286,7 @@ ob_start();
 
 <script>
 let currentQuestion = 1;
-const totalQuestions = 8;
+const totalQuestions = 13;
 
 // Safely parse hospital options
 let hospitalOptions = [];
@@ -933,16 +1354,21 @@ function submitQuestionnaire() {
     // Collect form data
     const formData = new FormData(document.getElementById('questionnaireForm'));
     
-    // Convert to object
+    // Convert to object with 13 fields matching the model
     const data = {
         age: formData.get('age'),
-        stress: formData.get('stress'),
-        anxiety: formData.get('anxiety'),
-        depression: formData.get('depression'),
-        mental_history: formData.get('mental_history'),
-        sleep: formData.get('sleep'),
-        exercise: formData.get('exercise'),
-        social_support: formData.get('social_support')
+        gender: formData.get('gender'),
+        employment_status: formData.get('employment_status'),
+        work_environment: formData.get('work_environment'),
+        mental_history: formData.get('mental_health_history'),
+        seeks_treatment: formData.get('seeks_treatment'),
+        stress: formData.get('stress_level'),
+        depression: formData.get('depression_score'),
+        anxiety: formData.get('anxiety_score'),
+        sleep: formData.get('sleep_hours'),
+        exercise: formData.get('physical_activity_days'),
+        social_support: formData.get('social_support_score'),
+        productivity: formData.get('productivity_score')
     };
 
     const shareWithHospital = shareHospitalToggle ? shareHospitalToggle.checked : false;

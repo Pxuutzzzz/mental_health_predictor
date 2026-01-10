@@ -110,6 +110,19 @@ switch ($path) {
         }
         break;
     
+    case 'google-login':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Clear any output buffers
+            while (ob_get_level()) {
+                ob_end_clean();
+            }
+            require __DIR__ . '/app/Controllers/AuthController.php';
+            $controller = new Controllers\AuthController();
+            $controller->googleLogin();
+            exit;
+        }
+        break;
+    
     case 'register-process':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             require __DIR__ . '/app/Controllers/AuthController.php';
@@ -124,17 +137,6 @@ switch ($path) {
         $controller->logout();
         break;
     
-    case 'change-password':
-        require __DIR__ . '/app/Controllers/AuthController.php';
-        $controller = new Controllers\AuthController();
-        $controller->showChangePassword();
-        break;
-    
-    case 'change-password-process':
-        require __DIR__ . '/app/Controllers/AuthController.php';
-        $controller = new Controllers\AuthController();
-        $controller->changePassword();
-        break;
     
     // Protected routes
     case 'assessment':
@@ -186,11 +188,7 @@ switch ($path) {
         require __DIR__ . '/views/professionals.php';
         break;
     
-    case 'about':
-        requireAuth();
-        require __DIR__ . '/views/about.php';
-        break;
-    
+        
     case 'consent':
         requireAuth();
         require __DIR__ . '/views/consent.php';

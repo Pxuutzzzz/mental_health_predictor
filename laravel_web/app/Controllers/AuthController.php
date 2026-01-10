@@ -95,6 +95,115 @@ class AuthController
         }
     }
     
+    public function googleLogin()
+    {
+        // Clear output buffer and set JSON header
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
+        header('Content-Type: application/json');
+        
+        try {
+            // Get JSON input
+            $input = json_decode(file_get_contents('php://input'), true);
+            $credential = $input['credential'] ?? '';
+            
+            if (empty($credential)) {
+                echo json_encode(['success' => false, 'error' => 'No credential provided']);
+                return;
+            }
+            
+            // Decode JWT token from Google
+            $parts = explode('.', $credential);
+            if (count($parts) !== 3) {
+                echo json_encode(['success' => false, 'error' => 'Invalid credential format']);
+                return;
+            }
+            
+            // Decode the payload (second part of JWT)
+            $payload = json_decode(base64_decode(strtr($parts[1], '-_', '+/')), true);
+            
+            if (!$payload) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token payload']);
+                return;
+            }
+            
+            // Extract user information
+            $email = $payload['email'] ?? '';
+            $name = $payload['name'] ?? '';
+            $googleId = $payload['sub'] ?? '';
+            $picture = $payload['picture'] ?? '';
+            
+            if (empty($email) || empty($googleId)) {
+                echo json_encode(['success' => false, 'error' => 'Missing required user information']);
+                return;
+            }
+            
+            // Check if user exists
+            $user = $this->db->fetchOne(
+                "SELECT * FROM users WHERE email = ? OR google_id = ? LIMIT 1",
+                [$email, $googleId]
+            );
+            
+            if ($user) {
+                // Update Google ID if not set
+                if (empty($user['google_id'])) {
+                    $this->db->update(
+                        "UPDATE users SET google_id = ?, google_picture = ? WHERE id = ?",
+                        [$googleId, $picture, $user['id']]
+                    );
+                }
+                
+                $userId = $user['id'];
+                $userName = $user['name'];
+            } else {
+                // Create new user
+                $userId = $this->db->insert(
+                    "INSERT INTO users (name, email, google_id, google_picture, password) VALUES (?, ?, ?, ?, ?)",
+                    [$name, $email, $googleId, $picture, password_hash(bin2hex(random_bytes(16)), PASSWORD_DEFAULT)]
+                );
+                
+                $userName = $name;
+                
+                // Log registration
+                $this->logger->log(
+                    \AuditLogger::EVENT_REGISTER,
+                    $userId,
+                    'New user registered via Google',
+                    ['name' => $name, 'email' => $email, 'google_id' => $googleId],
+                    'SUCCESS'
+                );
+            }
+            
+            // Set session
+            $_SESSION['user_id'] = $userId;
+            $_SESSION['user_name'] = $userName;
+            $_SESSION['user_email'] = $email;
+            $_SESSION['google_picture'] = $picture;
+            
+            // Log successful login
+            $this->logger->log(
+                \AuditLogger::EVENT_LOGIN,
+                $userId,
+                'User logged in via Google',
+                ['email' => $email],
+                'SUCCESS'
+            );
+            
+            // Load user's predictions
+            $this->loadUserPredictions($userId);
+            
+            // Check for redirect
+            $redirect = $_SESSION['redirect_after_login'] ?? 'dashboard';
+            unset($_SESSION['redirect_after_login']);
+            
+            echo json_encode(['success' => true, 'redirect' => $redirect]);
+            
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'error' => 'Terjadi kesalahan: ' . $e->getMessage()]);
+        }
+    }
+    
     public function register()
     {
         header('Content-Type: application/json');
@@ -185,164 +294,6 @@ class AuthController
         exit;
     }
     
-    public function showForgotPassword()
-    {
-        require __DIR__ . '/../../views/forgot_password.php';
-    }
-    
-    public function forgotPassword()
-    {
-        try {
-            $email = trim($_POST['email'] ?? '');
-            
-            if (empty($email)) {
-                header('Location: forgot-password?error=email_required');
-                exit;
-            }
-            
-            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                header('Location: forgot-password?error=invalid_email');
-                exit;
-            }
-            
-            // Check if user exists
-            $user = $this->db->fetchOne(
-                "SELECT id, name FROM users WHERE email = ? LIMIT 1",
-                [$email]
-            );
-            
-            if (!$user) {
-                header('Location: forgot-password?error=email_not_found');
-                exit;
-            }
-            
-            // Check for recent reset requests (prevent abuse)
-            $stmt = $this->db->getConnection()->prepare(
-                "SELECT COUNT(*) as count FROM password_reset_tokens 
-                WHERE email = ? AND created_at > DATE_SUB(NOW(), INTERVAL 5 MINUTE)"
-            );
-            $stmt->execute([$email]);
-            $recentRequests = $stmt->fetch(\PDO::FETCH_ASSOC);
-            
-            if ($recentRequests['count'] > 0) {
-                header('Location: forgot-password?error=too_many_requests');
-                exit;
-            }
-            
-            // Generate reset token
-            $token = bin2hex(random_bytes(32));
-            $expiresAt = date('Y-m-d H:i:s', strtotime('+1 hour'));
-            $ipAddress = $_SERVER['REMOTE_ADDR'] ?? 'Unknown';
-            
-            // Save token to database
-            $this->db->insert(
-                "INSERT INTO password_reset_tokens (email, token, expires_at, ip_address) VALUES (?, ?, ?, ?)",
-                [$email, $token, $expiresAt, $ipAddress]
-            );
-            
-            // Log the request
-            $this->logger->log(
-                \AuditLogger::EVENT_DATA_ACCESS,
-                $user['id'],
-                'Password reset requested',
-                ['email' => $email],
-                'SUCCESS'
-            );
-            
-            // Store token in session for development mode
-            $_SESSION['reset_token'] = $token;
-            $_SESSION['reset_email'] = $email;
-            
-            // Don't redirect here, let index.php handle it (will show dev-reset-link page)
-            return;
-            
-        } catch (\Exception $e) {
-            error_log("Forgot password error: " . $e->getMessage());
-            header('Location: forgot-password?error=server_error');
-            exit;
-        }
-    }
-    
-    public function showResetPassword()
-    {
-        require __DIR__ . '/../../views/reset_password.php';
-    }
-    
-    public function resetPassword()
-    {
-        try {
-            $token = $_POST['token'] ?? '';
-            $password = $_POST['password'] ?? '';
-            $confirmPassword = $_POST['confirm_password'] ?? '';
-            
-            if (empty($password)) {
-                header('Location: reset-password?token=' . urlencode($token) . '&error=password_required');
-                exit;
-            }
-            
-            if (strlen($password) < 6) {
-                header('Location: reset-password?token=' . urlencode($token) . '&error=password_too_short');
-                exit;
-            }
-            
-            if ($password !== $confirmPassword) {
-                header('Location: reset-password?token=' . urlencode($token) . '&error=password_mismatch');
-                exit;
-            }
-            
-            // Verify token
-            $stmt = $this->db->getConnection()->prepare(
-                "SELECT * FROM password_reset_tokens 
-                WHERE token = ? AND used_at IS NULL AND expires_at > NOW()"
-            );
-            $stmt->execute([$token]);
-            $tokenData = $stmt->fetch(\PDO::FETCH_ASSOC);
-            
-            if (!$tokenData) {
-                header('Location: login?error=invalid_or_expired_token');
-                exit;
-            }
-            
-            // Update user password
-            $hashedPassword = password_hash($password, PASSWORD_BCRYPT, ['cost' => 10]);
-            
-            $this->db->getConnection()->prepare(
-                "UPDATE users SET password = ?, last_password_change = NOW() WHERE email = ?"
-            )->execute([$hashedPassword, $tokenData['email']]);
-            
-            // Mark token as used
-            $this->db->getConnection()->prepare(
-                "UPDATE password_reset_tokens SET used_at = NOW() WHERE id = ?"
-            )->execute([$tokenData['id']]);
-            
-            // Get user for logging
-            $user = $this->db->fetchOne(
-                "SELECT id FROM users WHERE email = ?",
-                [$tokenData['email']]
-            );
-            
-            // Log the password reset
-            $this->logger->log(
-                \AuditLogger::EVENT_DATA_UPDATE,
-                $user['id'],
-                'Password reset completed',
-                ['email' => $tokenData['email']],
-                'SUCCESS'
-            );
-            
-            // Clear session reset data
-            unset($_SESSION['reset_token']);
-            unset($_SESSION['reset_email']);
-            
-            header('Location: login?success=password_reset');
-            exit;
-            
-        } catch (\Exception $e) {
-            error_log("Reset password error: " . $e->getMessage());
-            header('Location: login?error=server_error');
-            exit;
-        }
-    }
     
     private function loadUserPredictions($userId)
     {
@@ -375,99 +326,5 @@ class AuthController
         }
     }
     
-    public function showChangePassword()
-    {
-        if (!isset($_SESSION['user_id'])) {
-            header('Location: login');
-            exit;
-        }
-        require __DIR__ . '/../../views/change_password.php';
-    }
-    
-    public function changePassword()
-    {
-        if (!isset($_SESSION['user_id'])) {
-            header('Location: login');
-            exit;
-        }
-        
-        try {
-            $userId = $_SESSION['user_id'];
-            $oldPassword = $_POST['old_password'] ?? '';
-            $newPassword = $_POST['new_password'] ?? '';
-            $confirmPassword = $_POST['confirm_password'] ?? '';
-            
-            // Validation
-            if (empty($oldPassword) || empty($newPassword) || empty($confirmPassword)) {
-                $_SESSION['error'] = 'server_error';
-                header('Location: change-password');
-                exit;
-            }
-            
-            if ($newPassword !== $confirmPassword) {
-                $_SESSION['error'] = 'password_mismatch';
-                header('Location: change-password');
-                exit;
-            }
-            
-            if (strlen($newPassword) < 8) {
-                $_SESSION['error'] = 'password_weak';
-                header('Location: change-password');
-                exit;
-            }
-            
-            if ($oldPassword === $newPassword) {
-                $_SESSION['error'] = 'same_password';
-                header('Location: change-password');
-                exit;
-            }
-            
-            // Get current user password
-            $user = $this->db->fetchOne(
-                "SELECT password FROM users WHERE id = ? LIMIT 1",
-                [$userId]
-            );
-            
-            if (!$user) {
-                $_SESSION['error'] = 'server_error';
-                header('Location: change-password');
-                exit;
-            }
-            
-            // Verify old password
-            if (!password_verify($oldPassword, $user['password'])) {
-                $_SESSION['error'] = 'old_password_wrong';
-                header('Location: change-password');
-                exit;
-            }
-            
-            // Hash new password
-            $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
-            
-            // Update password
-            $this->db->insert(
-                "UPDATE users SET password = ?, updated_at = NOW() WHERE id = ?",
-                [$hashedPassword, $userId]
-            );
-            
-            // Log the change
-            $this->logger->log(
-                \AuditLogger::EVENT_DATA_MODIFICATION,
-                $userId,
-                'Password changed successfully',
-                [],
-                'SUCCESS'
-            );
-            
-            $_SESSION['success'] = 'Password berhasil diubah!';
-            header('Location: change-password');
-            exit;
-            
-        } catch (\Exception $e) {
-            error_log("Change password error: " . $e->getMessage());
-            $_SESSION['error'] = 'server_error';
-            header('Location: change-password');
-            exit;
-        }
-    }
+
 }

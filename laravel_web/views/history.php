@@ -1,7 +1,8 @@
+
 <?php
 $page = 'history';
 $pageTitle = 'Riwayat Pemeriksaan';
-
+$title = 'Riwayat Pemeriksaan - Mental Health Predictor';
 ob_start();
 ?>
 
@@ -103,7 +104,7 @@ ob_start();
                                     </p>
                                 </div>
                                 <div class="text-end">
-                                    <div class="text-muted small">Tingkat Keyakinan</div>
+                                    </script>
                                     <div class="h5 mb-0 text-<?= $riskColor ?>">
                                         <?= round($confidence * 100, 1) ?>%
                                     </div>
@@ -339,7 +340,7 @@ if (predictions.length > 1) {
                     },
                     tooltip: {
                         callbacks: {
-                            label: function(context) {
+           
                                 const index = context.dataIndex;
                                 const pred = predictions[index].prediction || "Tidak Diketahui";
                                 return [
@@ -395,119 +396,25 @@ function exportSingleToPDF(index) {
         const doc = new jsPDF("p", "mm", "a4");
         const pred = predictions[index];
         const input = pred.input || {};
-        const pageWidth = 210; // A4 width in mm
-        const pageHeight = 297; // A4 height in mm
+        const pageWidth = 210;
+        const pageHeight = 297;
         const margin = 15;
         const contentWidth = pageWidth - (margin * 2);
-        
-        // Colors
-        const primaryColor = [78, 115, 223];
-        const successColor = [40, 167, 69];
-        const warningColor = [255, 193, 7];
-        const dangerColor = [220, 53, 69];
-        const darkColor = [52, 58, 64];
-        const lightColor = [248, 249, 250];
-        
-        // Determine risk color
-        const predColor = (pred.prediction || "").includes("Low") ? successColor :
-                         (pred.prediction || "").includes("High") ? dangerColor : warningColor;
-        
-        // ===== HEADER SECTION =====
-        let yPos = 12;
-        
-        // Header background
-        doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-        doc.rect(0, 0, pageWidth, 28, "F");
-        
-        // Logo/Icon
-        doc.setFillColor(255, 255, 255);
-        doc.circle(20, 15, 6, "F");
-        doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-        doc.setFontSize(11);
-        doc.text("MH", 20, 16.5, { align: "center" });
-        
-        // Title
-        doc.setTextColor(255, 255, 255);
-        doc.setFontSize(16);
-        doc.text("LAPORAN PEMERIKSAAN KESEHATAN MENTAL", 30, 13);
-        
-        // Subtitle
-        doc.setFontSize(8);
-        doc.text("Tanggal Pemeriksaan: " + (pred.timestamp || "N/A") + " | Dibuat: " + new Date().toLocaleString(), 30, 20);
-        
-        yPos = 35;
-        
-        // ===== RESULT CARD =====
-        doc.setFillColor(predColor[0], predColor[1], predColor[2]);
-        doc.roundedRect(margin, yPos, contentWidth, 22, 3, 3, "F");
-        
-        // Risk Level
-        doc.setTextColor(255, 255, 255);
+
+        let yPos = 18;
         doc.setFontSize(14);
-        doc.text(pred.prediction || "Unknown Risk", pageWidth / 2, yPos + 10, { align: "center" });
-        
-        // Confidence badge
-        doc.setFillColor(255, 255, 255);
-        doc.roundedRect(pageWidth / 2 - 18, yPos + 13, 36, 6, 2, 2, "F");
-        doc.setTextColor(predColor[0], predColor[1], predColor[2]);
+        doc.setTextColor(0, 0, 0);
+        doc.text("LAPORAN PEMERIKSAAN KESEHATAN MENTAL", pageWidth / 2, yPos, { align: "center" });
+        yPos += 8;
+        doc.setFontSize(10);
+        doc.text("Tanggal Pemeriksaan: " + (pred.timestamp || "N/A"), margin, yPos);
+        yPos += 8;
+
+        // Tabel Data Pasien
+        doc.setFontSize(11);
+        doc.text("Data Pasien:", margin, yPos);
+        yPos += 4;
         doc.setFontSize(9);
-        doc.text("Keyakinan: " + (((pred.confidence || 0) * 100).toFixed(1)) + "%", pageWidth / 2, yPos + 17, { align: "center" });
-        
-        yPos += 28;
-        
-        // ===== TWO COLUMN LAYOUT =====
-        const col1X = margin;
-        const col2X = pageWidth / 2 + 2;
-        const colWidth = (contentWidth / 2) - 2;
-        
-        // LEFT COLUMN: Risk Distribution
-        let yCol1 = yPos;
-        doc.setTextColor(darkColor[0], darkColor[1], darkColor[2]);
-        doc.setFontSize(11);
-        doc.text("Distribusi Risiko", col1X, yCol1);
-        yCol1 += 1;
-        doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-        doc.setLineWidth(0.3);
-        doc.line(col1X, yCol1, col1X + 40, yCol1);
-        yCol1 += 6;
-        
-        if (pred.probabilities) {
-            const probData = [];
-            for (const [risk, prob] of Object.entries(pred.probabilities)) {
-                const rColor = risk.includes("Low") ? successColor : 
-                              risk.includes("High") ? dangerColor : warningColor;
-                probData.push([risk, (prob * 100).toFixed(1) + "%", rColor]);
-            }
-            
-            probData.forEach(([risk, percent, color]) => {
-                // Progress bar background
-                doc.setFillColor(230, 230, 230);
-                doc.roundedRect(col1X + 30, yCol1 - 3, 50, 5, 1, 1, "F");
-                
-                // Progress bar fill
-                const barWidth = (parseFloat(percent) / 100) * 50;
-                doc.setFillColor(color[0], color[1], color[2]);
-                doc.roundedRect(col1X + 30, yCol1 - 3, barWidth, 5, 1, 1, "F");
-                
-                // Label
-                doc.setFontSize(8);
-                doc.setTextColor(darkColor[0], darkColor[1], darkColor[2]);
-                const shortRisk = risk.replace(" Risk", "");
-                doc.text(shortRisk, col1X, yCol1);
-                doc.text(percent, col1X + 82, yCol1);
-                
-                yCol1 += 7;
-            });
-        }
-        
-        // RIGHT COLUMN: Patient Data Summary
-        let yCol2 = yPos;
-        doc.setFontSize(11);
-        doc.text("Informasi Pasien", col2X, yCol2);
-        yCol2 += 1;
-        doc.line(col2X, yCol2, col2X + 40, yCol2);
-        yCol2 += 6;
-        
         const patientData = [
             ["Usia", (input.age || "N/A") + " tahun"],
             ["Stres", (input.stress || "N/A") + "/10"],
@@ -518,104 +425,66 @@ function exportSingleToPDF(index) {
             ["Olahraga", input.exercise || "N/A"],
             ["Dukungan Sosial", input.social_support || "N/A"]
         ];
-        
         patientData.forEach(([label, value]) => {
-            doc.setFontSize(8);
-            doc.setTextColor(100, 100, 100);
-            doc.text(label + ":", col2X, yCol2);
-            doc.setTextColor(darkColor[0], darkColor[1], darkColor[2]);
-            doc.text(String(value), col2X + 32, yCol2);
-            yCol2 += 7;
+            doc.text(label + ":", margin, yPos);
+            doc.text(String(value), margin + 40, yPos);
+            yPos += 6;
         });
-        
-        yPos = Math.max(yCol1, yCol2) + 5;
-        
-        // ===== RECOMMENDATIONS SECTION =====
+        yPos += 2;
+
+        // Hasil Prediksi
         doc.setFontSize(11);
-        doc.setTextColor(darkColor[0], darkColor[1], darkColor[2]);
-        doc.text("Rekomendasi Profesional", margin, yPos);
-        yPos += 1;
-        doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-        doc.setLineWidth(0.3);
-        doc.line(margin, yPos, margin + 60, yPos);
-        yPos += 5;
-        
-        const recommendations = pred.recommendations || [];
-        console.log("Writing recommendations to PDF:", recommendations);
-        
-        if (recommendations && recommendations.length > 0) {
-            // Limit to 5 recommendations for space
-            const limitedRecs = recommendations.slice(0, 5);
-            
-            limitedRecs.forEach((rec, idx) => {
-                // Compact recommendation item
-                doc.setFillColor(250, 251, 252);
-                const recText = String(rec);
-                const lines = doc.splitTextToSize(recText, contentWidth - 15);
-                const itemHeight = Math.min(lines.length * 4 + 4, 12); // Limit height
-                
-                doc.roundedRect(margin, yPos - 2, contentWidth, itemHeight, 1, 1, "F");
-                
-                // Number badge (smaller)
-                doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-                doc.circle(margin + 3, yPos + 2, 2.5, "F");
-                doc.setTextColor(255, 255, 255);
-                doc.setFontSize(7);
-                doc.text(String(idx + 1), margin + 3, yPos + 2.8, { align: "center" });
-                
-                // Recommendation text (compact)
-                doc.setTextColor(darkColor[0], darkColor[1], darkColor[2]);
-                doc.setFontSize(8);
-                const displayLines = lines.slice(0, 2); // Max 2 lines per item
-                displayLines.forEach((line, lineIdx) => {
-                    doc.text(line, margin + 8, yPos + 2 + (lineIdx * 4));
-                });
-                
-                yPos += itemHeight + 2;
+        doc.text("Hasil Prediksi:", margin, yPos);
+        yPos += 4;
+        doc.setFontSize(10);
+        doc.text("Risiko Kesehatan Mental: " + (pred.prediction || "-"), margin, yPos);
+        yPos += 6;
+        doc.text("Keyakinan Model: " + (((pred.confidence || 0) * 100).toFixed(1)) + "%", margin, yPos);
+        yPos += 6;
+
+        // Distribusi Risiko (tabel sederhana)
+        if (pred.probabilities) {
+            doc.setFontSize(10);
+            doc.text("Distribusi Risiko:", margin, yPos);
+            yPos += 4;
+            Object.entries(pred.probabilities).forEach(([risk, prob]) => {
+                doc.text("- " + risk + ": " + (prob * 100).toFixed(1) + "%", margin + 4, yPos);
+                yPos += 5;
             });
-            
-            // Show count if more recommendations
-            if (recommendations.length > 5) {
-                doc.setFontSize(7);
-                doc.setTextColor(100, 100, 100);
-                doc.text("+" + (recommendations.length - 5) + " more recommendations available", margin, yPos);
-                yPos += 4;
-            }
-        } else {
-            // No recommendations message
-            doc.setFillColor(255, 243, 205);
-            doc.roundedRect(margin, yPos - 2, contentWidth, 12, 1, 1, "F");
-            
-            doc.setTextColor(133, 100, 4);
-            doc.setFontSize(8);
-            doc.text("⚠ Tidak ada rekomendasi tersedia. Lakukan pemeriksaan baru untuk saran yang dipersonalisasi.", margin + 3, yPos + 4);
-            
-            yPos += 14;
         }
-        
-        // ===== FOOTER =====
-        const footerY = pageHeight - 15;
-        
-        // Footer line
-        doc.setDrawColor(200, 200, 200);
-        doc.setLineWidth(0.3);
-        doc.line(margin, footerY, pageWidth - margin, footerY);
-        
-        // Footer text
-        doc.setFontSize(7);
-        doc.setTextColor(120, 120, 120);
-        doc.text("Sistem Prediksi Kesehatan Mental - Laporan Medis Rahasia", margin, footerY + 4);
-        doc.text(new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString(), pageWidth - margin, footerY + 4, { align: "right" });
-        
-        // Disclaimer
-        doc.setFontSize(6);
-        doc.setTextColor(150, 150, 150);
-        doc.text("Ini adalah pemeriksaan otomatis. Untuk diagnosis profesional, silakan konsultasi dengan profesional kesehatan mental berlisensi.", pageWidth / 2, footerY + 8, { align: "center" });
-        
+        yPos += 2;
+
+        // Rekomendasi
+        doc.setFontSize(11);
+        doc.text("Rekomendasi Profesional:", margin, yPos);
+        yPos += 4;
+        doc.setFontSize(9);
+        const recommendations = pred.recommendations || [];
+        if (recommendations && recommendations.length > 0) {
+            recommendations.slice(0, 8).forEach((rec, idx) => {
+                const lines = doc.splitTextToSize(String(rec), contentWidth - 10);
+                doc.text("• " + lines[0], margin + 4, yPos);
+                for (let i = 1; i < lines.length; i++) {
+                    yPos += 4;
+                    doc.text("  " + lines[i], margin + 8, yPos);
+                }
+                yPos += 6;
+            });
+        } else {
+            doc.text("Tidak ada rekomendasi tersedia.", margin + 4, yPos);
+            yPos += 6;
+        }
+
+        // Footer formal
+        const footerY = pageHeight - 18;
+        doc.setFontSize(8);
+        doc.setTextColor(80, 80, 80);
+        doc.text("Laporan ini dicetak otomatis oleh Sistem Prediksi Kesehatan Mental.", margin, footerY);
+        doc.text("Tanggal cetak: " + new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString(), margin, footerY + 5);
+
         // Download
         const timestamp = (pred.timestamp || new Date().toISOString()).replace(/[:\s]/g, "-");
         doc.save("mental_health_assessment_" + timestamp + ".pdf");
-        
         hideLoading();
     } catch (error) {
         hideLoading();
@@ -639,17 +508,7 @@ function exportToCSV() {
         // CSV Data
         predictions.forEach(pred => {
             const input = pred.input || {};
-            csv += "\\"" + (pred.timestamp || "") + "\\",";
-            csv += "\\"" + (pred.prediction || "") + "\\",";
-            csv += "\\"" + (((pred.confidence || 0) * 100).toFixed(1)) + "%\\",";
-            csv += "\\"" + (input.age || "") + "\\",";
-            csv += "\\"" + (input.stress || "") + "\\",";
-            csv += "\\"" + (input.anxiety || "") + "\\",";
-            csv += "\\"" + (input.depression || "") + "\\",";
-            csv += "\\"" + (input.mental_history || "") + "\\",";
-            csv += "\\"" + (input.sleep || "") + "\\",";
-            csv += "\\"" + (input.exercise || "") + "\\",";
-            csv += "\\"" + (input.social_support || "") + "\\"\\n";
+            // ...existing code in <script>...
         });
         
         // Download
@@ -669,8 +528,8 @@ function exportToCSV() {
         alert("Kesalahan saat mengekspor CSV: " + error.message);
     }
 }
-</script>';
-
-$title = 'Riwayat Pemeriksaan - Mental Health Predictor';
+</script>
+<?php
 require __DIR__ . '/layout.php';
 ?>
+<script>

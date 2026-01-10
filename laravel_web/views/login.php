@@ -6,6 +6,11 @@
     <title>Login - Mental Health Predictor</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <?php
+    // Load Google OAuth config
+    $googleConfig = require __DIR__ . '/../config/google.php';
+    $googleClientId = $googleConfig['client_id'];
+    ?>
     <style>
         :root {
             --primary: #4e73df;
@@ -137,37 +142,28 @@
                         </div>
                     <?php endif; ?>
                     
-                    <form id="loginForm">
-                        <div class="mb-3">
-                            <label class="form-label">Email Address</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                                <input type="email" class="form-control" name="email" placeholder="Enter your email" required>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Password</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                                <input type="password" class="form-control" name="password" placeholder="Enter your password" required>
-                            </div>
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary w-100 mb-3" id="loginBtn">
-                            <i class="bi bi-box-arrow-in-right"></i> Sign In
-                        </button>
-                    </form>
-                    
-                    <div class="divider">
-                        <span>Don't have an account?</span>
+                    <!-- Google Sign In Button -->
+                    <div id="g_id_onload"
+                         data-client_id="<?php echo htmlspecialchars($googleClientId); ?>"
+                         data-callback="handleCredentialResponse"
+                         data-auto_prompt="false">
                     </div>
                     
-                    <a href="register" class="btn btn-outline-primary w-100">
-                        <i class="bi bi-person-plus"></i> Create Account
-                    </a>
+                    <div class="g_id_signin mb-3" 
+                         data-type="standard" 
+                         data-size="large" 
+                         data-theme="outline" 
+                         data-text="signin_with"
+                         data-shape="rectangular"
+                         data-logo_alignment="left"
+                         data-width="380">
+                    </div>
                     
-                    <div class="text-center mt-3">
+                    <div class="text-center text-muted my-3">
+                        <small>Masuk menggunakan akun Google Anda</small>
+                    </div>
+                    
+                    <div class="text-center mt-4">
                         <a href="home" class="text-muted" style="text-decoration: none;">
                             <i class="bi bi-arrow-left me-1"></i>Kembali ke Beranda
                         </a>
@@ -177,41 +173,54 @@
         </div>
     </div>
     
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
+        function handleCredentialResponse(response) {
+            // Show loading state
+            const alertContainer = document.getElementById('alertContainer');
+            alertContainer.innerHTML = `
+                <div class="alert alert-info" role="alert">
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    Memproses login dengan Google...
+                </div>
+            `;
             
-            const btn = document.getElementById('loginBtn');
-            const originalText = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Signing in...';
-            
-            const formData = new FormData(this);
-            
-            try {
-                const response = await fetch('login-process', {
-                    method: 'POST',
-                    body: formData
-                });
+            // Send the credential to the server
+            fetch('google-login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ credential: response.credential })
+            })
+            .then(response => {
+                // Get raw text first to debug
+                return response.text();
+            })
+            .then(text => {
+                console.log('Raw response:', text);
                 
-                const result = await response.json();
-                
-                if (result.success) {
-                    showAlert('Login successful! Redirecting...', 'success');
-                    setTimeout(() => {
-                        window.location.href = result.redirect || 'dashboard';
-                    }, 1000);
-                } else {
-                    showAlert(result.error, 'danger');
-                    btn.disabled = false;
-                    btn.innerHTML = originalText;
+                // Try to parse as JSON
+                try {
+                    const data = JSON.parse(text);
+                    if (data.success) {
+                        showAlert('Login berhasil! Mengalihkan...', 'success');
+                        setTimeout(() => {
+                            window.location.href = data.redirect || 'dashboard';
+                        }, 1000);
+                    } else {
+                        showAlert(data.error || 'Login gagal', 'danger');
+                    }
+                } catch (e) {
+                    // If not JSON, show the raw response for debugging
+                    console.error('Not valid JSON:', text);
+                    showAlert('Server error. Check console for details.', 'danger');
                 }
-            } catch (error) {
-                showAlert('Connection error: ' + error.message, 'danger');
-                btn.disabled = false;
-                btn.innerHTML = originalText;
-            }
-        });
+            })
+            .catch(error => {
+                showAlert('Terjadi kesalahan: ' + error.message, 'danger');
+            });
+        }
         
         function showAlert(message, type) {
             const alertContainer = document.getElementById('alertContainer');
