@@ -16,7 +16,7 @@ class PredictionController
     private $db;
     private $logger;
     private $hospitalService;
-    
+
     public function __construct()
     {
         $this->db = \Database::getInstance();
@@ -25,20 +25,20 @@ class PredictionController
         // Path to Python executable (using conda environment)
         // Option 1: Use conda run command
         $this->pythonPath = 'C:\Users\putri\anaconda3\Scripts\conda.exe run -p c:\Users\putri\mental_health_predictor\.conda --no-capture-output python';
-        
+
         // Option 2: Direct path to conda environment python (uncomment if option 1 doesn't work)
         // $this->pythonPath = 'c:\Users\putri\mental_health_predictor\.conda\python.exe';
-        
+
         // Option 3: Use base anaconda python (fallback)
         // $this->pythonPath = 'C:\Users\putri\anaconda3\python.exe';
-        
+
         $this->scriptPath = dirname(__DIR__, 2) . '\src\predictor.py';
     }
-    
+
     public function predict()
     {
         header('Content-Type: application/json');
-        
+
         try {
             // Validate input - 13 fields matching the notebook model
             $age = floatval($_POST['age'] ?? 25);
@@ -54,12 +54,12 @@ class PredictionController
             $exercise = floatval($_POST['exercise'] ?? 3);
             $social_support = floatval($_POST['social_support'] ?? 50);
             $productivity = floatval($_POST['productivity'] ?? 70);
-            
+
             $share_with_hospital = $this->toBool($_POST['share_with_hospital'] ?? false);
             $hospital_id = $_POST['hospital_id'] ?? null;
             $patient_reference = trim($_POST['patient_reference'] ?? '');
             $hospital_notes = trim($_POST['hospital_notes'] ?? '');
-            
+
             // Check if staff mode
             $isStaffMode = $this->toBool($_POST['staff_mode'] ?? false);
             $facilityId = $_POST['facility_id'] ?? null;
@@ -76,24 +76,24 @@ class PredictionController
             if ($share_with_hospital && empty($hospital_id) && !$isStaffMode) {
                 throw new \InvalidArgumentException('Silakan pilih rumah sakit tujuan rujukan.');
             }
-            
+
             // Try to use Python ML model if available
             $result = null;
             $modelPath = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'mental_health_model.pkl';
-            
+
             if (file_exists($modelPath)) {
                 // Create Python script to run prediction
                 $pythonScript = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'temp_predict.py';
                 $scriptContent = $this->generatePythonScript($age, $gender, $employment_status, $work_environment, $mental_history, $seeks_treatment, $stress, $depression, $anxiety, $sleep, $exercise, $social_support, $productivity);
                 file_put_contents($pythonScript, $scriptContent);
-                
+
                 // Execute Python script
                 $command = sprintf('"%s" "%s" 2>&1', $this->pythonPath, $pythonScript);
                 exec($command, $output, $return_code);
-                
+
                 // Clean up temp script
                 @unlink($pythonScript);
-                
+
                 if ($return_code === 0) {
                     // Try to parse JSON output
                     $outputStr = implode("\n", $output);
@@ -104,17 +104,17 @@ class PredictionController
                     }
                 }
             }
-            
+
             // Fallback to mock result if Python fails
             if (!$result) {
                 $result = $this->getMockResult($age, $gender, $employment_status, $work_environment, $mental_history, $seeks_treatment, $stress, $depression, $anxiety, $sleep, $exercise, $social_support, $productivity);
             }
-            
+
             // Save to session history
             if (!isset($_SESSION['predictions'])) {
                 $_SESSION['predictions'] = [];
             }
-            
+
             // Save to database (with clinical data if staff mode)
             $clinicalData = null;
             if ($isStaffMode) {
@@ -132,7 +132,7 @@ class PredictionController
                     'staff_mode' => true
                 ]);
             }
-            
+
             $assessmentId = $this->db->insert(
                 "INSERT INTO assessments (user_id, age, stress_level, anxiety_level, depression_level, 
                 mental_history, sleep_hours, exercise_level, social_support, prediction, confidence, 
@@ -154,7 +154,7 @@ class PredictionController
                     $clinicalData
                 ]
             );
-            
+
             // Log the prediction
             $this->logger->log(
                 \AuditLogger::EVENT_PREDICTION,
@@ -166,7 +166,7 @@ class PredictionController
                 ],
                 'SUCCESS'
             );
-            
+
             // Add to session (for immediate display) - include all 13 fields
             $latestPrediction = [
                 'id' => $assessmentId,
@@ -215,7 +215,7 @@ class PredictionController
                     'facility' => ['id' => $facilityId, 'name' => 'Hospital System']
                 ];
             }
-            
+
             // Return result with success flag and flatten data
             $response = array_merge(['success' => true, 'assessment_id' => $assessmentId], $result);
             if ($hospitalSync) {
@@ -226,7 +226,7 @@ class PredictionController
                 $response['patient_mrn'] = $patientMRN;
             }
             echo json_encode($response);
-            
+
         } catch (\Exception $e) {
             http_response_code(500);
             echo json_encode([
@@ -242,15 +242,15 @@ class PredictionController
             return $value;
         }
 
-        $normalized = strtolower(trim((string)$value));
+        $normalized = strtolower(trim((string) $value));
         return in_array($normalized, ['1', 'true', 'yes', 'on'], true);
     }
-    
+
     private function generatePythonScript($age, $gender, $employment_status, $work_environment, $mental_history, $seeks_treatment, $stress, $depression, $anxiety, $sleep, $exercise, $social_support, $productivity)
     {
         $modelDir = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'models';
         $modelDir = str_replace('\\', '\\\\', $modelDir);
-        
+
         return <<<PYTHON
 import sys
 import os
@@ -266,7 +266,7 @@ try:
     label_encoders = joblib.load(os.path.join(model_path, 'label_encoders.pkl'))
     feature_columns = joblib.load(os.path.join(model_path, 'feature_columns.pkl'))
     
-    # Prepare input data
+    # Prepare input data - GUNAKAN NAMA KOLOM YANG SAMA DENGAN NOTEBOOK
     data = {
         'age': {$age},
         'gender': '{$gender}',
@@ -361,7 +361,7 @@ PYTHON;
     {
         // Simple risk calculation based on multiple factors
         $mental_score = ($stress + $depression + $anxiety) / 50.0; // Normalized to 0-1
-        
+
         // Adjust for other factors
         $sleep_penalty = ($sleep < 6 || $sleep > 9) ? 0.1 : 0;
         $exercise_bonus = ($exercise >= 4) ? -0.1 : (($exercise < 2) ? 0.1 : 0);
@@ -369,10 +369,10 @@ PYTHON;
         $history_penalty = ($mental_history == 'Yes') ? 0.15 : 0;
         $treatment_bonus = ($seeks_treatment == 'Yes') ? -0.05 : 0;
         $productivity_bonus = ($productivity >= 70) ? -0.05 : (($productivity < 40) ? 0.1 : 0);
-        
+
         $risk_score = $mental_score + $sleep_penalty + $exercise_bonus + $support_bonus + $history_penalty + $treatment_bonus + $productivity_bonus;
         $risk_score = max(0, min(1, $risk_score)); // Clamp between 0 and 1
-        
+
         if ($risk_score < 0.35) {
             $prediction = 'Low Risk';
             $confidence = 0.78 + (rand(0, 10) / 100);
@@ -401,13 +401,13 @@ PYTHON;
                 'High Risk' => 0.65 + (rand(0, 20) / 100)
             ];
         }
-        
+
         // Normalize probabilities
         $total = array_sum($probs);
         foreach ($probs as $key => $value) {
             $probs[$key] = $value / $total;
         }
-        
+
         return [
             'prediction' => $prediction,
             'confidence' => $confidence,
@@ -417,7 +417,7 @@ PYTHON;
             'recommendations' => $this->getRecommendations($prediction)
         ];
     }
-    
+
     private function getRecommendations($risk_level)
     {
         $recommendations = [
@@ -442,7 +442,7 @@ PYTHON;
                 'Hindari keputusan besar sampai berkonsultasi dengan profesional'
             ]
         ];
-        
+
         return $recommendations[$risk_level] ?? [];
     }
 }

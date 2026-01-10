@@ -491,39 +491,21 @@ ob_start();
             <h3 class="question-title">Berapa usia Anda?</h3>
             <p class="question-subtitle">Ceritakan sedikit tentang diri Anda untuk membantu kami memberikan rekomendasi yang lebih personal</p>
             
-            <div class="radio-card-group">
-                <div class="radio-card">
-                    <input type="radio" name="age" id="age_18_25" value="22" checked>
-                    <label for="age_18_25">
-                        <div class="radio-card-icon">🧒</div>
-                        <div class="radio-card-title">18-25 tahun</div>
-                        <div class="radio-card-desc">Dewasa muda</div>
-                    </label>
-                </div>
-                <div class="radio-card">
-                    <input type="radio" name="age" id="age_26_35" value="30">
-                    <label for="age_26_35">
-                        <div class="radio-card-icon">👨</div>
-                        <div class="radio-card-title">26-35 tahun</div>
-                        <div class="radio-card-desc">Dewasa</div>
-                    </label>
-                </div>
-                <div class="radio-card">
-                    <input type="radio" name="age" id="age_36_50" value="43">
-                    <label for="age_36_50">
-                        <div class="radio-card-icon">👨‍💼</div>
-                        <div class="radio-card-title">36-50 tahun</div>
-                        <div class="radio-card-desc">Dewasa matang</div>
-                    </label>
-                </div>
-                <div class="radio-card">
-                    <input type="radio" name="age" id="age_51_plus" value="60">
-                    <label for="age_51_plus">
-                        <div class="radio-card-icon">👴</div>
-                        <div class="radio-card-title">51+ tahun</div>
-                        <div class="radio-card-desc">Lansia</div>
-                    </label>
-                </div>
+            <div class="mb-4">
+                <label for="age_input" class="form-label" style="font-size: 16px; font-weight: 600; color: #2c3e50;">Masukkan usia Anda (tahun)</label>
+                <input 
+                    type="number" 
+                    class="form-control form-control-lg" 
+                    id="age_input" 
+                    name="age" 
+                    min="13" 
+                    max="100" 
+                    value="25" 
+                    required
+                    style="font-size: 24px; text-align: center; padding: 20px; border: 2px solid #e9ecef; border-radius: 10px;"
+                    placeholder="Contoh: 25"
+                >
+                <small class="form-text text-muted mt-2 d-block text-center">Usia minimal 13 tahun, maksimal 100 tahun</small>
             </div>
             
             <div class="wizard-navigation">

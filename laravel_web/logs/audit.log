@@ -45,3 +45,14 @@
 [2026-01-10 15:05:34] LOGIN | User: 3 | IP: ::1 | Action: User logged in via Google | Status: SUCCESS | Details: {"email":"2211501021@student.unisayogya.ac.id"}
 [2026-01-10 15:06:26] LOGIN | User: 2 | IP: ::1 | Action: User logged in via Google | Status: SUCCESS | Details: {"email":"putriindah2343@gmail.com"}
 [2026-01-10 15:16:25] PREDICTION | User: 3 | IP: ::1 | Action: Mental health prediction performed | Status: SUCCESS | Details: {"prediction":"Low Risk","confidence":0.81}
+[2026-01-10 15:58:25] PREDICTION | User: 3 | IP: ::1 | Action: Mental health prediction performed | Status: SUCCESS | Details: {"prediction":"Low Risk","confidence":0.88}
+[2026-01-10 16:02:32] PREDICTION | User: 3 | IP: ::1 | Action: Mental health prediction performed | Status: SUCCESS | Details: {"prediction":"Low Risk","confidence":0.8}
+[2026-01-10 16:04:28] LOGOUT | User: 3 | IP: ::1 | Action: User logged out | Status: SUCCESS | Details: []
+[2026-01-10 16:05:23] LOGIN | User: 3 | IP: ::1 | Action: User logged in via Google | Status: SUCCESS | Details: {"email":"2211501021@student.unisayogya.ac.id"}
+[2026-01-10 16:11:27] PREDICTION | User: 3 | IP: ::1 | Action: Mental health prediction performed | Status: SUCCESS | Details: {"prediction":"High Risk","confidence":0.8999999999999999}
+[2026-01-10 16:20:14] PREDICTION | User: 3 | IP: ::1 | Action: Mental health prediction performed | Status: SUCCESS | Details: {"prediction":"Low Risk","confidence":0.8200000000000001}
+[2026-01-10 16:23:11] PREDICTION | User: 3 | IP: ::1 | Action: Mental health prediction performed | Status: SUCCESS | Details: {"prediction":"Low Risk","confidence":0.8}
+[2026-01-10 16:38:12] LOGOUT | User: 3 | IP: ::1 | Action: User logged out | Status: SUCCESS | Details: []
+[2026-01-10 16:40:08] LOGIN | User: 3 | IP: ::1 | Action: User logged in via Google | Status: SUCCESS | Details: {"email":"2211501021@student.unisayogya.ac.id"}
+[2026-01-10 16:45:53] LOGOUT | User: 3 | IP: ::1 | Action: User logged out | Status: SUCCESS | Details: []
+[2026-01-10 16:46:04] LOGIN | User: 3 | IP: ::1 | Action: User logged in via Google | Status: SUCCESS | Details: {"email":"2211501021@student.unisayogya.ac.id"}
