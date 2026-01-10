@@ -1,13 +1,28 @@
 # 🧠 Mental Health Predictor
 
+
 An advanced AI-powered mental health assessment tool with **three beautiful web interfaces**: Gradio (modern blocks UI), Flask (Bootstrap 5), and CLI (interactive terminal). This project uses machine learning to predict mental health risk levels and provide personalized recommendations.
 
+## 🏥 Kelebihan Sistem
+
+- **Mudah digunakan oleh tenaga medis**: Antarmuka dirancang agar intuitif dan ramah pengguna untuk mendukung alur kerja tenaga kesehatan.
+- **Aman**: Sistem menerapkan prinsip keamanan data dan privasi pasien.
+- **Dapat diskalakan**: Arsitektur aplikasi memungkinkan pengembangan dan penambahan fitur di masa depan.
+- **Dapat diintegrasikan dengan sistem rumah sakit yang ada**: Mendukung integrasi dengan sistem informasi rumah sakit melalui API atau penyesuaian lebih lanjut.
+
 ## ✨ Features
+
 
 🎯 **Three Interface Options:**
 - **Gradio Web App** - Modern, interactive UI with tabs, charts, and custom styling
 - **Flask Web App** - Professional Bootstrap 5 interface with REST API
 - **CLI App** - Beautiful terminal interface with colors and interactive prompts
+
+🩺 **Healthcare-Ready:**
+- Mudah digunakan oleh tenaga medis dengan antarmuka yang intuitif
+- Fitur keamanan data pasien dan audit log
+- Dukungan integrasi dengan sistem rumah sakit (API, interoperabilitas data)
+- Skalabilitas untuk penggunaan di berbagai skala fasilitas kesehatan
 
 🤖 **AI-Powered:**
 - Multiple ML algorithms (Random Forest, Logistic Regression, XGBoost)
