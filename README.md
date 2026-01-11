@@ -1,3 +1,53 @@
+
+# Laporan Proyek Mental Health Predictor
+
+## 1. Pendahuluan
+Aplikasi Mental Health Predictor bertujuan untuk membantu memprediksi risiko kesehatan mental pada individu berdasarkan data yang diberikan. Masalah kesehatan yang ingin dipecahkan adalah deteksi dini risiko gangguan kesehatan mental, sehingga intervensi dapat dilakukan lebih cepat dan tepat. Pendekatan yang diambil dalam pengembangan aplikasi ini adalah dengan memanfaatkan machine learning untuk menganalisis data dan memberikan prediksi, serta mengembangkan aplikasi berbasis web dan CLI agar mudah diakses oleh pengguna dan tenaga kesehatan.
+
+## 2. Metodologi
+### a. Langkah-langkah Pengembangan
+1. Studi literatur terkait kesehatan mental dan machine learning.
+2. Pengumpulan dan analisis dataset kesehatan mental.
+3. Preprocessing data: pembersihan, normalisasi, dan transformasi fitur.
+4. Pemilihan dan pelatihan model machine learning (Random Forest).
+5. Evaluasi model menggunakan metrik akurasi, precision, recall, dan f1-score.
+6. Pengembangan aplikasi (CLI, Flask, Gradio, Laravel) untuk integrasi model.
+7. Pengujian aplikasi dan model.
+8. Deployment dan dokumentasi.
+
+### b. Pemilihan Model Machine Learning
+Model Random Forest dipilih karena kemampuannya dalam menangani data dengan banyak fitur dan memberikan hasil prediksi yang stabil. Model ini juga mudah diinterpretasikan dan memiliki performa yang baik pada data klasifikasi.
+
+Pemodelan dilakukan menggunakan Jupyter Notebook (`random_forest_model.ipynb`). Setelah model dilatih dan dievaluasi, model disimpan dalam format `.pkl` (pickle) menggunakan script `tran.py`. File `.pkl` ini kemudian digunakan untuk integrasi ke aplikasi.
+
+### c. Preprocessing Data Medis
+Preprocessing meliputi:
+- Menghapus data duplikat dan data kosong
+- Normalisasi nilai numerik
+- Encoding fitur kategorikal
+- Pembagian data menjadi data latih dan data uji
+
+### d. Penerapan Metodologi Agile
+Pengembangan aplikasi dilakukan secara iteratif dengan pembagian tugas dalam sprint mingguan. Setiap sprint menghasilkan fitur yang dapat diuji dan dievaluasi, sehingga pengembangan lebih adaptif terhadap perubahan kebutuhan.
+
+## 3. Analisis dan Pembahasan
+### a. Hasil Pengembangan
+Aplikasi berhasil memprediksi risiko kesehatan mental dengan akurasi yang baik. Model Random Forest menunjukkan performa yang stabil pada data uji. Aplikasi dapat diakses melalui antarmuka CLI, web (Flask/Gradio), dan Laravel untuk integrasi lebih lanjut.
+
+### b. Tantangan yang Dihadapi
+- Ketersediaan dan kualitas data kesehatan mental yang terbatas
+- Penyesuaian preprocessing untuk data yang tidak konsisten
+- Integrasi model machine learning ke berbagai platform aplikasi
+- Menjaga keamanan data pengguna
+
+### c. Solusi untuk Masalah Keamanan, Optimasi, dan Integrasi
+- Implementasi enkripsi data pada penyimpanan dan transmisi
+- Penggunaan audit log untuk memantau akses data
+- Optimasi model dengan hyperparameter tuning
+- Modularisasi kode untuk memudahkan integrasi ke berbagai platform
+
+## 4. Kesimpulan
+Aplikasi Mental Health Predictor telah berhasil dikembangkan dan mampu memberikan prediksi risiko kesehatan mental secara otomatis. Model machine learning yang digunakan memberikan hasil yang memuaskan. Tantangan utama berupa data dan integrasi dapat diatasi dengan solusi yang diterapkan. Untuk pengembangan selanjutnya, disarankan untuk memperluas dataset, menambah fitur prediksi, dan meningkatkan keamanan serta user experience aplikasi.
 # 🧠 Mental Health Predictor
 
 
@@ -88,273 +138,3 @@ venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 🎓 Train the Model
-
-Train the AI model using the sample dataset:
-
-```powershell
-python src\model_train.py
-```
-
-This will:
-- ✅ Load and preprocess data
-- ✅ Train the model (Random Forest by default)
-- ✅ Evaluate performance (~85% accuracy)
-- ✅ Save model, scaler, and encoders
-- ✅ Generate visualizations (confusion matrix, feature importance)
-
-**Training Output:**
-- Models: `models/mental_health_model.pkl`, `scaler.pkl`, `label_encoder.pkl`
-- Metrics: `results/metrics.json`
-- Charts: `results/confusion_matrix.png`, `results/feature_importance.png`
-- Logs: `logs/training.log`
-
-## 🎨 Launch Web Applications
-
-### Option 1: Gradio App (Recommended) ⭐
-
-**Modern UI with tabs, charts, and custom styling**
-
-```powershell
-python app\gradio_app.py
-```
-
-**Features:**
-- 🎨 Beautiful gradient design with custom CSS
-- 📑 Multiple tabs (Assessment, Information, Model Info)
-- 📊 Interactive Plotly charts
-- 💡 Real-time recommendations
-- 📱 Responsive design
-- 🌐 Accessible at: `http://localhost:7860`
-
-**Screenshot Preview:**
-- Header with gradient background
-- Slider inputs with live values
-- Risk badges with colors (🔴 🟡 🟢)
-- Doughnut probability charts
-- Personalized recommendations
-- Crisis resources section
-
----
-
-### Option 2: Flask Web App 🌐
-
-**Professional Bootstrap 5 interface with REST API**
-
-```powershell
-python app\flask_app.py
-```
-
-**Features:**
-- 🎯 Professional Bootstrap 5 design
-- 📊 Chart.js visualizations
-- 🔄 Smooth animations
-- 🎨 Gradient cards and buttons
-- 📱 Fully responsive
-- 🌐 Accessible at: `http://localhost:5000`
-
-**API Endpoints:**
-```powershell
-POST http://localhost:5000/api/predict
-GET  http://localhost:5000/api/health
-```
-
-**Example API Request:**
-```json
-POST /api/predict
-{
-  "age": 25,
-  "stress_level": 5,
-  "anxiety_level": 5,
-  "depression_score": 5,
-  "mental_history": 0,
-  "sleep_hours": 7,
-  "exercise_frequency": 1,
-  "social_support": 1
-}
-```
-
----
-
-### Option 3: CLI Application 💻
-
-**Interactive terminal with colors and beautiful formatting**
-
-```powershell
-python app\cli_app.py
-```
-
-**Features:**
-- 🎨 Colorful terminal UI (ANSI colors)
-- ⚡ Interactive prompts with validation
-- 📊 ASCII bar charts for probabilities
-- 🎯 Step-by-step assessment
-- 💡 Detailed recommendations
-- 🆘 Crisis resources
-
-**CLI Experience:**
-```
-==================================================================
-🧠 MENTAL HEALTH PREDICTOR - CLI
-==================================================================
-
-What would you like to do?
-  1. Take mental health assessment
-  2. View information
-  3. Exit
-
-Choice (1-3): 1
-```
-
-## 📊 Model Performance & Configuration
-
-### Expected Performance Metrics
-
-After training on the sample dataset:
-- **Accuracy**: ~85%
-- **Precision**: ~83%
-- **Recall**: ~82%
-- **F1-Score**: ~82%
-
-### Output Files
-
-```
-mental_health_predictor/
-├── models/
-│   ├── mental_health_model.pkl    # Trained model
-│   ├── scaler.pkl                 # Feature scaler
-│   └── label_encoder.pkl          # Label encoder
-├── results/
-│   ├── metrics.json              # Performance metrics
-│   ├── confusion_matrix.png      # Confusion matrix plot
-│   └── feature_importance.png    # Feature importance plot
-└── logs/
-    └── training.log              # Training logs
-```
-
-### Configuration (`config.yaml`)
-
-```yaml
-# Model Algorithm
-model:
-  algorithm: "random_forest"  # Options: random_forest, logistic_regression, xgboost
-
-# Random Forest Parameters
-random_forest:
-  n_estimators: 100
-  max_depth: 10
-  random_state: 42
-
-# Data Configuration
-data:
-  test_size: 0.2
-  random_state: 42
-
-# Gradio App
-gradio:
-  server_port: 7860
-  share: false  # Set true for public URL
-```
-
-## 🎨 UI Customization
-
-### Gradio App Styling
-
-Edit `app/gradio_app.py` to customize:
-- **Colors**: Modify `CUSTOM_CSS` gradient colors
-- **Tabs**: Add/remove tabs in `create_interface()`
-- **Inputs**: Adjust slider ranges and labels
-- **Theme**: Change `gr.themes.Soft()` to other themes
-
-### Flask App Styling
-
-Edit `templates/index.html` to customize:
-- **Colors**: Modify CSS variables in `<style>`
-- **Layout**: Adjust Bootstrap grid classes
-- **Charts**: Customize Chart.js configuration
-- **Animations**: Add/modify CSS transitions
-
-### CLI Colors
-
-Edit `app/cli_app.py` to customize:
-- **Colors**: Modify `Colors` class ANSI codes
-- **Prompts**: Adjust input messages
-- **Layout**: Change section headers and formatting
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## ⚠️ Disclaimer
-
-This application is for educational and research purposes only. It should not be used as a substitute for professional mental health advice, diagnosis, or treatment. If you're experiencing mental health issues, please consult with a qualified healthcare professional.
-
-## 📄 License
-
-This project is open source and available under the MIT License.
-
-## � Authors
-
-- Your Name
-
-## 🙏 Acknowledgments
-
-- Thanks to all contributors
-- Data source: [Mention your data source]
-- Built with scikit-learn, Gradio, and Python
-
-## � Contact
-
-For questions or feedback, please contact [your-email@example.com]
-
----
-
-**Note**: Remember to update the feature names and input fields in `app/gradio_app.py` based on your actual dataset columns before running the application.
-
-##  Advanced Usage
-
-### Python API
-
-```python
-from src.utils import load_config
-from src.predictor import MentalHealthPredictor
-
-config = load_config()
-predictor = MentalHealthPredictor(config)
-predictor.initialize()
-
-input_data = {'age': 25, 'stress_level': 5, 'anxiety_level': 5, 
-              'depression_score': 5, 'mental_history': 0, 
-              'sleep_hours': 7, 'exercise_frequency': 1, 'social_support': 1}
-
-prediction, confidence, probabilities = predictor.predict_with_confidence(input_data)
-print(f"Prediction: {prediction} ({confidence:.2%})")
-```
-
-### Try Different Algorithms
-
-Edit config.yaml, change algorithm to xgboost or logistic_regression, then retrain.
-
-##  Deployment
-
-### Gradio (Hugging Face)
-Upload to Hugging Face Spaces with Gradio SDK for instant public URL!
-
-### Flask (Render/Heroku)
-Create Procfile with: web: python app/flask_app.py
-
-### REST API Usage
-```bash
-curl -X POST http://localhost:5000/api/predict -H "Content-Type: application/json" -d '{"age":25,"stress_level":5,"anxiety_level":5,"depression_score":5,"mental_history":0,"sleep_hours":7,"exercise_frequency":1,"social_support":1}'
-```
-
-##  Crisis Resources (24/7)
-
-- National Suicide Prevention Lifeline: 1-800-273-8255
-- Crisis Text Line: Text HOME to 741741
-- International: https://www.iasp.info/resources/Crisis_Centres/
-
----
-
-Made with  for Mental Health Awareness | MIT License
-"# mental_health_predictor" 
