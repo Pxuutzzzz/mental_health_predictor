@@ -395,6 +395,7 @@ if (predictions.length > 1) {
         });
     }
 }
+window.exportSingleToPDF = exportSingleToPDF;
 
 
 function exportSingleToPDF(index) {
@@ -516,6 +517,20 @@ function exportSingleToPDF(index) {
         });
         
         yPos += 5;
+
+        // ===== ALL INPUT DATA SECTION (DYNAMIC) =====
+        doc.setFontSize(10);
+        doc.setFont(undefined, "bold");
+        doc.setTextColor(44, 62, 80);
+        doc.text("Data Input Lengkap:", margin, yPos);
+        yPos += 6;
+        doc.setFont(undefined, "normal");
+        doc.setFontSize(9);
+        doc.setTextColor(80, 80, 80);
+        Object.entries(input).forEach(([key, value]) => {
+            doc.text(key + ": " + String(value), margin + 2, yPos);
+            yPos += 5;
+        });
 
         // ===== ASSESSMENT RESULTS SECTION =====
         doc.setFontSize(11);
