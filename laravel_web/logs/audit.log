@@ -57,3 +57,5 @@
 [2026-01-10 16:45:53] LOGOUT | User: 3 | IP: ::1 | Action: User logged out | Status: SUCCESS | Details: []
 [2026-01-10 16:46:04] LOGIN | User: 3 | IP: ::1 | Action: User logged in via Google | Status: SUCCESS | Details: {"email":"2211501021@student.unisayogya.ac.id"}
 [2026-01-11 09:47:15] LOGIN | User: 3 | IP: ::1 | Action: User logged in via Google | Status: SUCCESS | Details: {"email":"2211501021@student.unisayogya.ac.id"}
+[2026-01-11 11:31:47] REGISTER | User: 6 | IP: ::1 | Action: New user registered via Google | Status: SUCCESS | Details: {"name":"2211501019 2211501019","email":"2211501019@student.unisayogya.ac.id","google_id":"109328227908514044456"}
+[2026-01-11 11:31:47] LOGIN | User: 6 | IP: ::1 | Action: User logged in via Google | Status: SUCCESS | Details: {"email":"2211501019@student.unisayogya.ac.id"}
