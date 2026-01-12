@@ -22,17 +22,22 @@ class PredictionController
         $this->db = \Database::getInstance();
         $this->logger = new \AuditLogger($this->db->getConnection());
         $this->hospitalService = new \HospitalIntegrationService($this->db->getConnection(), $this->logger);
-        // Path to Python executable (using conda environment)
-        // Option 1: Use conda run command
-        $this->pythonPath = 'C:\Users\putri\anaconda3\Scripts\conda.exe run -p c:\Users\putri\mental_health_predictor\.conda --no-capture-output python';
 
-        // Option 2: Direct path to conda environment python (uncomment if option 1 doesn't work)
-        // $this->pythonPath = 'c:\Users\putri\mental_health_predictor\.conda\python.exe';
+        // Determine Python path based on environment
+        $envPython = getenv('PYTHON_PATH');
+        if ($envPython) {
+            $this->pythonPath = $envPython;
+        } elseif (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            // Windows fallback (Local Development)
+            $this->pythonPath = 'python';
+        } else {
+            // Linux fallback (Production/Railway)
+            $this->pythonPath = 'python3';
+        }
 
-        // Option 3: Use base anaconda python (fallback)
-        // $this->pythonPath = 'C:\Users\putri\anaconda3\python.exe';
-
-        $this->scriptPath = dirname(__DIR__, 2) . '\src\predictor.py';
+        // Script path is not strictly used as we generate temp_predict.py, but keeping for reference
+        // Adjusted to point to root if needed, but currently unused
+        $this->scriptPath = dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR . 'predictor.py';
     }
 
     public function predict()
@@ -79,16 +84,21 @@ class PredictionController
 
             // Try to use Python ML model if available
             $result = null;
-            $modelPath = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'mental_health_model.pkl';
+
+            // Fix path to models directory (it is in the project root, 3 levels up from this file)
+            $modelDir = dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'models';
+            $modelPath = $modelDir . DIRECTORY_SEPARATOR . 'mental_health_model.pkl';
 
             if (file_exists($modelPath)) {
-                // Create Python script to run prediction
+                // Create Python script to run prediction in web root (laravel_web)
                 $pythonScript = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'temp_predict.py';
-                $scriptContent = $this->generatePythonScript($age, $gender, $employment_status, $work_environment, $mental_history, $seeks_treatment, $stress, $depression, $anxiety, $sleep, $exercise, $social_support, $productivity);
+
+                // Pass correct model directory to the generator
+                $scriptContent = $this->generatePythonScript($age, $gender, $employment_status, $work_environment, $mental_history, $seeks_treatment, $stress, $depression, $anxiety, $sleep, $exercise, $social_support, $productivity, $modelDir);
                 file_put_contents($pythonScript, $scriptContent);
 
                 // Execute Python script
-                $command = sprintf('"%s" "%s" 2>&1', $this->pythonPath, $pythonScript);
+                $command = sprintf('%s "%s" 2>&1', $this->pythonPath, $pythonScript);
                 exec($command, $output, $return_code);
 
                 // Clean up temp script
@@ -246,9 +256,8 @@ class PredictionController
         return in_array($normalized, ['1', 'true', 'yes', 'on'], true);
     }
 
-    private function generatePythonScript($age, $gender, $employment_status, $work_environment, $mental_history, $seeks_treatment, $stress, $depression, $anxiety, $sleep, $exercise, $social_support, $productivity)
+    private function generatePythonScript($age, $gender, $employment_status, $work_environment, $mental_history, $seeks_treatment, $stress, $depression, $anxiety, $sleep, $exercise, $social_support, $productivity, $modelDir)
     {
-        $modelDir = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'models';
         $modelDir = str_replace('\\', '\\\\', $modelDir);
 
         return <<<PYTHON
