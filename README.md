@@ -1,164 +1,143 @@
-# Mental Health Predictor - Laravel + Bootstrap Version
 
-## Overview
-This is a Laravel-style implementation of the Mental Health Predictor using Bootstrap 5 for the frontend UI. It integrates with the existing Python ML model and now supports **hospital integration** for direct referral to partner healthcare facilities.
+# Laporan Proyek Mental Health Predictor
 
-## Features
-✅ Professional Bootstrap 5 UI
-✅ Responsive design (mobile-friendly)
-✅ Real-time form validation
-✅ AJAX-based predictions
-✅ Session-based history tracking
-✅ Professional gradients and animations
-✅ Bootstrap Icons integration
-✅ **Hospital Integration** – Direct referrals to partner hospitals/RS
-✅ Encrypted data transmission (HTTPS + Bearer Token)
-✅ Audit logging & compliance (HIPAA/GDPR)
+## 1. Pendahuluan
+Aplikasi Mental Health Predictor bertujuan untuk membantu memprediksi risiko kesehatan mental pada individu berdasarkan data yang diberikan. Masalah kesehatan yang ingin dipecahkan adalah deteksi dini risiko gangguan kesehatan mental, sehingga intervensi dapat dilakukan lebih cepat dan tepat. Pendekatan yang diambil dalam pengembangan aplikasi ini adalah dengan memanfaatkan machine learning untuk menganalisis data dan memberikan prediksi, serta mengembangkan aplikasi berbasis web dan CLI agar mudah diakses oleh pengguna dan tenaga kesehatan.
 
-## File Structure
+## 2. Metodologi
+### a. Langkah-langkah Pengembangan
+1. Studi literatur terkait kesehatan mental dan machine learning.
+2. Pengumpulan dan analisis dataset kesehatan mental.
+3. Preprocessing data: pembersihan, normalisasi, dan transformasi fitur.
+4. Pemilihan dan pelatihan model machine learning (Random Forest).
+5. Evaluasi model menggunakan metrik akurasi, precision, recall, dan f1-score.
+6. Pengembangan aplikasi (CLI, Flask, Gradio, Laravel) untuk integrasi model.
+7. Pengujian aplikasi dan model.
+8. Deployment dan dokumentasi.
+
+### b. Pemilihan Model Machine Learning
+Model Random Forest dipilih karena kemampuannya dalam menangani data dengan banyak fitur dan memberikan hasil prediksi yang stabil. Model ini juga mudah diinterpretasikan dan memiliki performa yang baik pada data klasifikasi.
+
+Pemodelan dilakukan menggunakan Jupyter Notebook (`random_forest_model.ipynb`). Setelah model dilatih dan dievaluasi, model disimpan dalam format `.pkl` (pickle) menggunakan script `tran.py`. File `.pkl` ini kemudian digunakan untuk integrasi ke aplikasi.
+
+### c. Preprocessing Data Medis
+Preprocessing meliputi:
+- Menghapus data duplikat dan data kosong
+- Normalisasi nilai numerik
+- Encoding fitur kategorikal
+- Pembagian data menjadi data latih dan data uji
+
+### d. Penerapan Metodologi Agile
+Pengembangan aplikasi dilakukan secara iteratif dengan pembagian tugas dalam sprint mingguan. Setiap sprint menghasilkan fitur yang dapat diuji dan dievaluasi, sehingga pengembangan lebih adaptif terhadap perubahan kebutuhan.
+
+## 3. Analisis dan Pembahasan
+### a. Hasil Pengembangan
+Aplikasi berhasil memprediksi risiko kesehatan mental dengan akurasi yang baik. Model Random Forest menunjukkan performa yang stabil pada data uji. Aplikasi dapat diakses melalui antarmuka CLI, web (Flask/Gradio), dan Laravel untuk integrasi lebih lanjut.
+
+### b. Tantangan yang Dihadapi
+- Ketersediaan dan kualitas data kesehatan mental yang terbatas
+- Penyesuaian preprocessing untuk data yang tidak konsisten
+- Integrasi model machine learning ke berbagai platform aplikasi
+- Menjaga keamanan data pengguna
+
+### c. Solusi untuk Masalah Keamanan, Optimasi, dan Integrasi
+- Implementasi enkripsi data pada penyimpanan dan transmisi
+- Penggunaan audit log untuk memantau akses data
+- Optimasi model dengan hyperparameter tuning
+- Modularisasi kode untuk memudahkan integrasi ke berbagai platform
+
+## 4. Kesimpulan
+Aplikasi Mental Health Predictor telah berhasil dikembangkan dan mampu memberikan prediksi risiko kesehatan mental secara otomatis. Model machine learning yang digunakan memberikan hasil yang memuaskan. Tantangan utama berupa data dan integrasi dapat diatasi dengan solusi yang diterapkan. Untuk pengembangan selanjutnya, disarankan untuk memperluas dataset, menambah fitur prediksi, dan meningkatkan keamanan serta user experience aplikasi.
+# 🧠 Mental Health Predictor
+
+
+An advanced AI-powered mental health assessment tool with **three beautiful web interfaces**: Gradio (modern blocks UI), Flask (Bootstrap 5), and CLI (interactive terminal). This project uses machine learning to predict mental health risk levels and provide personalized recommendations.
+
+## 🏥 Kelebihan Sistem
+
+- **Mudah digunakan oleh tenaga medis**: Antarmuka dirancang agar intuitif dan ramah pengguna untuk mendukung alur kerja tenaga kesehatan.
+- **Aman**: Sistem menerapkan prinsip keamanan data dan privasi pasien.
+- **Dapat diskalakan**: Arsitektur aplikasi memungkinkan pengembangan dan penambahan fitur di masa depan.
+- **Dapat diintegrasikan dengan sistem rumah sakit yang ada**: Mendukung integrasi dengan sistem informasi rumah sakit melalui API atau penyesuaian lebih lanjut.
+
+## ✨ Features
+
+
+🎯 **Three Interface Options:**
+- **Gradio Web App** - Modern, interactive UI with tabs, charts, and custom styling
+- **Flask Web App** - Professional Bootstrap 5 interface with REST API
+- **CLI App** - Beautiful terminal interface with colors and interactive prompts
+
+🩺 **Healthcare-Ready:**
+- Mudah digunakan oleh tenaga medis dengan antarmuka yang intuitif
+- Fitur keamanan data pasien dan audit log
+- Dukungan integrasi dengan sistem rumah sakit (API, interoperabilitas data)
+- Skalabilitas untuk penggunaan di berbagai skala fasilitas kesehatan
+
+🤖 **AI-Powered:**
+- Multiple ML algorithms (Random Forest, Logistic Regression, XGBoost)
+- Confidence scores and probability distributions
+- Real-time predictions
+
+📊 **Comprehensive Analysis:**
+- 8 input features (age, stress, anxiety, depression, etc.)
+- Detailed risk assessment (Low/Moderate/High)
+- Personalized recommendations
+- Interactive visualizations
+
+🔒 **Privacy-Focused:**
+- All processing done locally
+- No data storage
+- Anonymous and confidential
+
+## 📁 Project Structure
+
 ```
-laravel_web/
-├── index.php                           # Main entry point (router)
+mental_health_predictor/
 ├── app/
-│   └── Controllers/
-│       └── PredictionController.php    # Handles prediction logic
-├── views/
-│   ├── assessment.php                  # Main assessment form
-│   └── history.php                     # Assessment history page
-└── README.md                           # This file
+│   ├── gradio_app.py          # 🎨 Modern Gradio UI with tabs & styling
+│   ├── flask_app.py           # 🌐 Flask web app + REST API
+│   └── cli_app.py             # 💻 Interactive CLI with colors
+├── data/
+│   └── data.csv               # 📊 Sample dataset (100 records)
+├── src/
+│   ├── __init__.py           
+│   ├── utils.py               # 🛠️ Helper functions
+│   ├── data_preprocess.py     # 🔄 Data preprocessing
+│   ├── model_train.py         # 🎓 Model training pipeline
+│   └── predictor.py           # 🔮 Prediction module
+├── templates/
+│   └── index.html             # 🎨 Beautiful Bootstrap 5 UI
+├── models/                    # 💾 Trained models (auto-generated)
+├── logs/                      # 📝 Application logs
+├── results/                   # 📈 Metrics & visualizations
+├── config.yaml                # ⚙️ Configuration
+├── requirements.txt           # 📦 Dependencies
+├── .env                       # 🔐 Environment variables
+├── .gitignore
+└── README.md
 ```
 
-## Setup Instructions
+## 🚀 Quick Start
 
-### 1. Requirements
-- PHP 7.4+ (built-in web server or Apache/Nginx)
-- Python 3.x with required packages
-- Existing ML model files in `/models` directory
+### 📦 Installation
 
-### 2. Running with PHP Built-in Server
-
-**Option A: From laravel_web directory:**
-```bash
-cd laravel_web
-php -S localhost:9000
+1. **Clone or download this repository**
+```powershell
+cd C:\Users\putri\mental_health_predictor
 ```
 
-**Option B: From project root:**
-```bash
-php -S localhost:9000 -t laravel_web
+2. **Create and activate virtual environment**
+```powershell
+python -m venv venv
+venv\Scripts\activate
 ```
 
-### 3. Access the Application
-Open your browser and navigate to:
-- Main Assessment: `http://localhost:9000`
-- History: `http://localhost:9000/history`
-
-## How It Works
-
-### Frontend (Bootstrap 5)
-- **assessment.php**: Patient assessment form with:
-  - Range sliders for numerical inputs (Age, Stress, Anxiety, Depression, Sleep)
-  - Radio buttons for binary choices (Mental History, Social Support)
-  - Dropdown for exercise level
-  - Real-time value display
-  - AJAX form submission
-  - Animated results display
-
-- **history.php**: Session-based history viewer showing:
-  - All previous assessments
-  - Input parameters and results
-  - Timestamp for each assessment
-  - Clear history option
-
-### Backend (PHP Laravel-style)
-- **index.php**: Simple router handling:
-  - `/` or `/assessment` → Main form
-  - `/predict` (POST) → Prediction endpoint
-  - `/history` → History viewer
-
-- **PredictionController.php**: 
-  - Receives form data
-  - Executes Python predictor script
-  - Parses results
-  - Saves to session
-  - Returns JSON response
-
-### Integration with Python ML
-The controller calls the Python predictor using:
-```php
-exec('python predictor.py predict --age 25 --stress 5 ...')
+3. **Install dependencies**
+```powershell
+pip install -r requirements.txt
 ```
 
-## Customization
 
-### Changing Colors
-Edit the CSS variables in `assessment.php`:
-```css
-:root {
-    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-```
+# SISTEM PREDIKSI KESEHATAN MENTAL BERBASIS MACHINE LEARNING
 
-### Modifying Form Fields
-Edit the form section in `views/assessment.php` to add/remove fields.
-
-### Adjusting Python Path
-Update the Python path in `PredictionController.php`:
-```php
-$this->pythonPath = 'C:\Users\putri\anaconda3\python.exe';
-```
-
-## Features Comparison
-
-| Feature | Gradio Version | Laravel + Bootstrap |
-|---------|---------------|---------------------|
-| UI Framework | Gradio | Bootstrap 5 |
-| Backend | Python | PHP |
-| Styling | Custom CSS | Bootstrap Components |
-| Form Handling | Gradio Components | HTML5 + JavaScript |
-| Session Management | None | PHP Sessions |
-| History Tracking | None | Built-in |
-| Mobile Responsive | Yes | Yes |
-| Customization | Limited | Full Control |
-
-## Advantages of Laravel + Bootstrap
-
-✅ **Full Control**: Complete customization of UI/UX
-✅ **Professional**: Bootstrap components look polished
-✅ **Familiar**: Standard web technologies (HTML/CSS/JS)
-✅ **Database Ready**: Easy to add MySQL integration
-✅ **Authentication**: Can add user login easily
-✅ **Production Ready**: Can deploy to any PHP hosting
-✅ **SEO Friendly**: Better for search engine optimization
-✅ **Hospital Integration**: Built-in referral system to healthcare partners
-
-## Future Enhancements
-
-Possible additions:
-- [ ] MySQL database integration
-- [ ] User authentication (login/register)
-- [ ] PDF report generation
-- [ ] Email notifications
-- [ ] Multi-language support
-- [ ] Admin dashboard
-- [ ] Export history to CSV
-- [ ] Chart.js visualization
-- [ ] API endpoints for mobile apps
-- [x] **Hospital integration (COMPLETED)** – See [HOSPITAL_INTEGRATION.md](HOSPITAL_INTEGRATION.md)
-
-## Troubleshooting
-
-**Problem**: Python not found
-- **Solution**: Update `$this->pythonPath` in PredictionController.php
-
-**Problem**: Predictions not working
-- **Solution**: Check that Python model files exist in `/models` directory
-
-**Problem**: Session history not persisting
-- **Solution**: Ensure PHP sessions are enabled in php.ini
-
-## License
-Educational purposes only. Not for production medical use.
-
-## Support
-For issues or questions, refer to the main project documentation.
