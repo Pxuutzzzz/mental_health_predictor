@@ -24,13 +24,13 @@ aptPkgs = [
 cmds = [
     # Install Composer manually 
     "curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer",
-    # Setup Python environment in LOCAL directory (safe)
-    "python3 -m venv venv",
-    ". venv/bin/activate && pip install -r requirements.txt",
+    # Setup Python environment in /app/venv (Standard Railway Path)
+    "python3 -m venv /app/venv",
+    ". /app/venv/bin/activate && pip install -r requirements.txt",
     # Install PHP dependencies
     "cd laravel_web && composer install --no-dev --optimize-autoloader"
 ]
 
 [start]
-# Use local venv path
-cmd = ". venv/bin/activate && /usr/bin/php -S 0.0.0.0:$PORT -t laravel_web laravel_web/router.php"
+# Use absolute path /app/venv
+cmd = ". /app/venv/bin/activate && /usr/bin/php -S 0.0.0.0:$PORT -t laravel_web laravel_web/router.php"
