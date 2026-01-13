@@ -24,14 +24,12 @@ cmds = [
     "curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer",
     
     # Install Python dependencies GLOBALLY (System-wide)
-    # This avoids venv being ignored by gitignore or lost during build copy
     "pip3 install -r requirements.txt --break-system-packages",
     
-    # Install PHP dependencies
-    "cd laravel_web && composer install --no-dev --optimize-autoloader"
+    # Install PHP dependencies (Now in ROOT, not laravel_web)
+    "composer install --no-dev --optimize-autoloader"
 ]
 
 [start]
-# Run PHP directly. Python packages are available globally.
-# Use absolute path for PHP for safety.
-cmd = "/usr/bin/php -S 0.0.0.0:$PORT -t laravel_web laravel_web/router.php"
+# Run PHP directly. Files are in ROOT now.
+cmd = "/usr/bin/php -S 0.0.0.0:$PORT router.php"
