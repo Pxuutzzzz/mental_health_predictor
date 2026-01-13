@@ -1,1 +1,1 @@
-web: gunicorn app.flask_app:app
+web: php -S 0.0.0.0:$PORT -t laravel_web/
