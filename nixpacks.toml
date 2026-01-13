@@ -1,26 +1,35 @@
 # Nixpacks Configuration for Mental Health Predictor
 # Specifies both PHP (for Web UI) and Python (for ML Model)
 
-# We use manual configuration to ensure both languages are present
+# Clear default providers to rely on explicit APT packages
 providers = []
 
 [phases.setup]
-# Use generic 'php' package which guarantees 'php' binary availability
-nixPkgs = [
-    "php",
-    "phpExtensions.pdo",
-    "phpExtensions.pdo_mysql",
-    "phpExtensions.mbstring",
-    "phpPackages.composer",
+# Use APT (Debian) packages to ensure binaries are in standard /usr/bin paths
+aptPkgs = [
+    "php-cli",
+    "php-common",
+    "php-mysql",
+    "php-mbstring",
     "python3",
-    "python311Packages.pip"
+    "python3-pip",
+    "python3-venv",
+    "git",
+    "unzip",
+    "curl"
 ]
 
 [phases.install]
 cmds = [
-    "python -m venv /opt/venv && . /opt/venv/bin/activate && pip install -r requirements.txt",
+    # Install Composer manually since apt package can be old
+    "curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer",
+    # Setup Python environment
+    "python3 -m venv /opt/venv",
+    ". /opt/venv/bin/activate && pip install -r requirements.txt",
+    # Install PHP dependencies
     "cd laravel_web && composer install --no-dev --optimize-autoloader"
 ]
 
 [start]
-cmd = ". /opt/venv/bin/activate && php -S 0.0.0.0:$PORT -t laravel_web laravel_web/router.php"
+# Explicitly use absolute paths for extra safety, though PATH should work now
+cmd = ". /opt/venv/bin/activate && /usr/bin/php -S 0.0.0.0:$PORT -t laravel_web laravel_web/router.php"
