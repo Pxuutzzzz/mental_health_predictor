@@ -4,7 +4,15 @@
 providers = ["php", "python"]
 
 [phases.setup]
-nixPkgs = ["php", "php81Packages.composer", "python3", "python311Packages.pip"]
+# Explicitly use PHP 8.1 and its extensions to ensure PDO MySQL is available
+nixPkgs = [
+    "php81",
+    "php81Packages.composer",
+    "php81Extensions.pdo_mysql",
+    "php81Extensions.mbstring",
+    "python3",
+    "python311Packages.pip"
+]
 
 [phases.install]
 cmds = [
