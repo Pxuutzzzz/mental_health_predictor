@@ -1,11 +1,10 @@
 # Nixpacks Configuration for Mental Health Predictor
 # Specifies both PHP (for Web UI) and Python (for ML Model)
 
-# Clear default providers to rely on explicit APT packages
 providers = []
 
 [phases.setup]
-# Use APT (Debian) packages to ensure binaries are in standard /usr/bin paths
+# Use APT (Debian) packages
 aptPkgs = [
     "php-cli",
     "php-common",
@@ -14,7 +13,6 @@ aptPkgs = [
     "php-curl", 
     "python3",
     "python3-pip",
-    "python3-venv",
     "git",
     "unzip",
     "curl"
@@ -24,13 +22,16 @@ aptPkgs = [
 cmds = [
     # Install Composer manually 
     "curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer",
-    # Setup Python environment in /app/venv (Standard Railway Path)
-    "python3 -m venv /app/venv",
-    ". /app/venv/bin/activate && pip install -r requirements.txt",
+    
+    # Install Python dependencies GLOBALLY (System-wide)
+    # This avoids venv being ignored by gitignore or lost during build copy
+    "pip3 install -r requirements.txt --break-system-packages",
+    
     # Install PHP dependencies
     "cd laravel_web && composer install --no-dev --optimize-autoloader"
 ]
 
 [start]
-# Use absolute path /app/venv
-cmd = ". /app/venv/bin/activate && /usr/bin/php -S 0.0.0.0:$PORT -t laravel_web laravel_web/router.php"
+# Run PHP directly. Python packages are available globally.
+# Use absolute path for PHP for safety.
+cmd = "/usr/bin/php -S 0.0.0.0:$PORT -t laravel_web laravel_web/router.php"
