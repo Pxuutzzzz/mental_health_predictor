@@ -316,13 +316,18 @@ class AuthController
                 'timestamp' => $assessment['created_at'],
                 'input' => [
                     'age' => $assessment['age'],
+                    'gender' => $assessment['gender'] ?? 'Female',
+                    'employment_status' => $assessment['employment_status'] ?? 'Employed',
+                    'work_environment' => $assessment['work_environment'] ?? 'Office',
                     'stress' => $assessment['stress_level'],
                     'anxiety' => $assessment['anxiety_level'],
                     'depression' => $assessment['depression_level'],
                     'mental_history' => $assessment['mental_history'],
+                    'seeks_treatment' => $assessment['seeks_treatment'] ?? 'No',
                     'sleep' => $assessment['sleep_hours'],
                     'exercise' => $assessment['exercise_level'],
-                    'social_support' => $assessment['social_support']
+                    'social_support' => $assessment['social_support'],
+                    'productivity' => $assessment['productivity'] ?? 70
                 ],
                 'prediction' => $assessment['prediction'],
                 'confidence' => (float) $assessment['confidence'],

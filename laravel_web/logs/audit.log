@@ -60,3 +60,4 @@
 [2026-01-11 11:31:47] REGISTER | User: 6 | IP: ::1 | Action: New user registered via Google | Status: SUCCESS | Details: {"name":"2211501019 2211501019","email":"2211501019@student.unisayogya.ac.id","google_id":"109328227908514044456"}
 [2026-01-11 11:31:47] LOGIN | User: 6 | IP: ::1 | Action: User logged in via Google | Status: SUCCESS | Details: {"email":"2211501019@student.unisayogya.ac.id"}
 [2026-01-13 08:42:54] LOGIN | User: 3 | IP: ::1 | Action: User logged in via Google | Status: SUCCESS | Details: {"email":"2211501021@student.unisayogya.ac.id"}
+[2026-01-13 08:56:25] PREDICTION | User: 3 | IP: ::1 | Action: Mental health prediction performed | Status: SUCCESS | Details: {"prediction":"Low Risk","confidence":0.79}
