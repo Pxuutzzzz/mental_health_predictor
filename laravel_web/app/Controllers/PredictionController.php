@@ -144,19 +144,26 @@ class PredictionController
             }
 
             $assessmentId = $this->db->insert(
-                "INSERT INTO assessments (user_id, age, stress_level, anxiety_level, depression_level, 
-                mental_history, sleep_hours, exercise_level, social_support, prediction, confidence, 
-                probabilities, recommendations, clinical_data) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO assessments (user_id, age, gender, employment_status, work_environment, 
+                stress_level, anxiety_level, depression_level, mental_history, seeks_treatment, 
+                sleep_hours, exercise_level, social_support, productivity, 
+                prediction, confidence, probabilities, recommendations, clinical_data) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 [
                     $_SESSION['user_id'] ?? null,
                     $age,
+                    $gender,
+                    $employment_status,
+                    $work_environment,
                     $stress,
                     $anxiety,
                     $depression,
                     $mental_history,
+                    $seeks_treatment,
                     $sleep,
                     $exercise,
                     $social_support,
+                    $productivity,
                     $result['prediction'] ?? 'Unknown',
                     $result['confidence'] ?? 0,
                     json_encode($result['probabilities'] ?? []),

@@ -487,19 +487,19 @@ function exportSingleToPDF(index) {
         doc.setFont(undefined, \'normal\');
         doc.setFontSize(9);
         const patientData = [
-            ["Usia", (input.age || "N/A") + " tahun"],
-            ["Jenis Kelamin", input.gender || "N/A"],
-            ["Status Pekerjaan", input.employment_status || "N/A"],
-            ["Lingkungan Kerja", input.work_environment || "N/A"],
-            ["Riwayat Kesehatan Mental", input.mental_history || "N/A"],
-            ["Mencari Bantuan Profesional", input.seeks_treatment || "N/A"],
-            ["Tingkat Stres", (input.stress || "N/A") + "/10"],
-            ["Skor Depresi", (input.depression || "N/A")],
-            ["Skor Kecemasan", (input.anxiety || "N/A")],
-            ["Durasi Tidur", (input.sleep || "N/A") + " jam/hari"],
-            ["Aktivitas Fisik (hari/minggu)", input.exercise || "N/A"],
-            ["Skor Dukungan Sosial", input.social_support || "N/A"],
-            ["Skor Produktivitas", input.productivity || "N/A"]
+            ["Usia", (input.age || "-") + " tahun"],
+            ["Jenis Kelamin", input.gender || "-"],
+            ["Status Pekerjaan", input.employment_status || "-"],
+            ["Lingkungan Kerja", input.work_environment || "-"],
+            ["Riwayat Kesehatan Mental", input.mental_history || "Tidak ada"],
+            ["Mencari Bantuan Profesional", input.seeks_treatment || "-"],
+            ["Tingkat Stres", (input.stress || "-") + "/10"],
+            ["Skor Depresi", (input.depression || "-")],
+            ["Skor Kecemasan", (input.anxiety || "-")],
+            ["Durasi Tidur", (input.sleep || "-") + " jam/hari"],
+            ["Aktivitas Fisik (hari/minggu)", input.exercise || "-"],
+            ["Skor Dukungan Sosial", input.social_support || "-"],
+            ["Skor Produktivitas", input.productivity || "-"]
         ];
         
         patientData.forEach(([label, value], idx) => {
@@ -518,19 +518,7 @@ function exportSingleToPDF(index) {
         
         yPos += 5;
 
-        // ===== ALL INPUT DATA SECTION (DYNAMIC) =====
-        doc.setFontSize(10);
-        doc.setFont(undefined, "bold");
-        doc.setTextColor(44, 62, 80);
-        doc.text("Data Input Lengkap:", margin, yPos);
-        yPos += 6;
-        doc.setFont(undefined, "normal");
-        doc.setFontSize(9);
-        doc.setTextColor(80, 80, 80);
-        Object.entries(input).forEach(([key, value]) => {
-            doc.text(key + ": " + String(value), margin + 2, yPos);
-            yPos += 5;
-        });
+        // Data Input Lengkap section removed as per request to tidy up
 
         // ===== ASSESSMENT RESULTS SECTION =====
         doc.setFontSize(11);
@@ -604,7 +592,13 @@ function exportSingleToPDF(index) {
                 
                 yPos += 7;
             });
-            yPos += 3;
+            yPos += 5; // Extra spacing after probability
+        }
+        
+        // Check page break before recommendations
+        if (yPos > pageHeight - margin - 60) {
+            doc.addPage();
+            yPos = margin;
         }
 
         // ===== RECOMMENDATIONS SECTION =====
