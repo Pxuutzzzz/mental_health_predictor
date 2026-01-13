@@ -1,1 +1,1 @@
-web: cd laravel_web && php -S 0.0.0.0:$PORT router.php
+web: gunicorn app.flask_app:app
